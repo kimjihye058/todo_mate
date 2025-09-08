@@ -1,3 +1,33 @@
+@font-face {
+  font-family: "Pretendard-Regular";
+  font-weight: 400;
+  src: url("./fonts/400_Pretendard_Regular.otf") format("otf");
+}
+
+@font-face {
+  font-family: "Pretendard-Medium";
+  font-weight: 500;
+  src: url("./fonts/500_Pretendard_Medium.otf") format("otf");
+}
+
+@font-face {
+  font-family: "Pretendard-Medium";
+  font-weight: 600;
+  src: url("./fonts/600_Pretendard_SemiBold.otf") format("otf");
+}
+
+@font-face {
+  font-family: "Pretendard-Medium";
+  font-weight: 700;
+  src: url("./fonts/700_Pretendard_Bold.otf") format("otf");
+}
+
+@font-face {
+  font-family: "Pretendard-Medium";
+  font-weight: 800;
+  src: url("./fonts/800_Pretendard_ExtraBold.otf") format("otf");
+}
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
