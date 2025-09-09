@@ -3,6 +3,7 @@ import { atomWithStorage } from "jotai/utils";
 import { useState } from "react";
 import { css } from "@emotion/react";
 import { IconWorld, IconDots } from "@tabler/icons-react";
+import { Sheet } from "react-modal-sheet";
 
 type TodoItem = {
   id: number;
@@ -11,6 +12,7 @@ type TodoItem = {
 };
 
 const showInputAtom = atom(false);
+const isOpenAtom = atom(false);
 
 // 로컬 스토리지에 저장되도록 atomWithStorage 사용
 const todosAtom = atomWithStorage<TodoItem[]>("todos", []);
@@ -20,6 +22,7 @@ function Todo() {
   const [todos, setTodos] = useAtom(todosAtom);
   const [inputValue, setInputValue] = useState("");
   const [nextId, setNextId] = useState(1);
+  const [isOpen, setOpen] = useAtom(isOpenAtom);
 
   const handleCategoryClick = () => {
     setShowInput((prev) => !prev); // 입력창만 토글
@@ -195,6 +198,7 @@ function Todo() {
                   {todo.text}
                 </p>
                 <button
+                  onClick={() => setOpen(true)}
                   css={css`
                     background-color: white;
                     padding: 0;
@@ -208,6 +212,13 @@ function Todo() {
             ))}
         </div>
       )}
+      <Sheet isOpen={isOpen} onClose={() => setOpen(false)}>
+        <Sheet.Container>
+          <Sheet.Header />
+          <Sheet.Content>{/* Your sheet content goes here */}</Sheet.Content>
+        </Sheet.Container>
+        <Sheet.Backdrop />
+      </Sheet>
     </div>
   );
 }
