@@ -3,8 +3,13 @@ import { useState } from "react";
 import { css } from "@emotion/react";
 import { IconWorld, IconDots } from "@tabler/icons-react";
 
+type TodoItem = {
+  text: string;
+  completed: boolean;
+};
+
 const showTodoListAtom = atom(false);
-const todosAtom = atom<string[]>([]);
+const todosAtom = atom<TodoItem[]>([]);
 
 function Todo() {
   const [showTodoList, setShowTodoList] = useAtom(showTodoListAtom);
@@ -14,14 +19,20 @@ function Todo() {
   const handleCategoryClick = () => {
     setShowTodoList((prev) => !prev);
   };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    // 한글일 때 두 번 나오는 것을 방지
     if (e.nativeEvent.isComposing) return;
-    // 엔터 입력시 자동으로 등록되도록
     if (e.key === "Enter" && inputValue.trim() !== "") {
-      setTodos([...todos, inputValue.trim()]);
+      setTodos([...todos, { text: inputValue.trim(), completed: false }]);
       setInputValue("");
     }
+  };
+
+  const toggleTodo = (index: number) => {
+    const updated = todos.map((todo, i) =>
+      i === index ? { ...todo, completed: !todo.completed } : todo
+    );
+    setTodos(updated);
   };
 
   return (
@@ -45,13 +56,14 @@ function Todo() {
         `}
         onClick={handleCategoryClick}
       >
-        <IconWorld width={15} height={15} color="#979AA4" />
+        <IconWorld width={15} height={15} color="#979aa4" />
         <p
           css={css`
             font-family: Pretendard;
             font-weight: 600;
             font-size: 14px;
             margin: 0;
+            color: #5e9d68;
           `}
         >
           todo
@@ -102,7 +114,7 @@ function Todo() {
               onKeyDown={handleKeyDown}
               css={css`
                 border: none;
-                border-bottom: 2px solid #000;
+                border-bottom: 2px solid #5e9d68;
                 width: 377px;
                 height: 40px;
                 ::placeholder {
@@ -120,7 +132,7 @@ function Todo() {
                 height: 20px;
               `}
             >
-              <IconDots stroke={2} width={20} height={20} color="#ACACAC" />
+              <IconDots stroke={2} width={20} height={20} color="#acacac" />
             </button>
           </div>
 
@@ -136,6 +148,7 @@ function Todo() {
               `}
             >
               <button
+                onClick={() => toggleTodo(index)}
                 css={css`
                   background-color: white;
                   padding: 0;
@@ -144,7 +157,11 @@ function Todo() {
                 `}
               >
                 <img
-                  src="./images/feed/goalIcon.svg"
+                  src={
+                    todo.completed
+                      ? "./images/feed/goalCompletedIcon.svg"
+                      : "./images/feed/goalIcon.svg"
+                  }
                   css={css`
                     width: 21px;
                     height: 21px;
@@ -154,14 +171,15 @@ function Todo() {
               <p
                 css={css`
                   font-family: Pretendard;
-                  font-weight: 600;
+                  font-weight: 400;
                   font-size: 14px;
                   margin: 0;
                   flex: 1;
                   text-align: start;
+                  color: "#000";
                 `}
               >
-                {todo}
+                {todo.text}
               </p>
               <button
                 css={css`
@@ -171,7 +189,7 @@ function Todo() {
                   margin-left: 10px;
                 `}
               >
-                <IconDots stroke={2} width={20} height={20} color="#ACACAC" />
+                <IconDots stroke={2} width={20} height={20} color="#acacac" />
               </button>
             </div>
           ))}
