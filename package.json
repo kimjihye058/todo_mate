@@ -14,9 +14,12 @@
     "@emotion/react": "^11.14.0",
     "@tabler/icons-react": "^3.34.1",
     "atoms": "^0.2.0",
+    "dayjs": "^1.11.18",
     "jotai": "^2.13.1",
+    "motion": "^12.23.12",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "react-modal-sheet": "^5.1.1",
     "styled-components": "^6.1.19"
   },
   "devDependencies": {

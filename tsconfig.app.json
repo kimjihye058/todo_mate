@@ -24,7 +24,10 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
 
-    "jsxImportSource": "@emotion/react"
+    "jsxImportSource": "@emotion/react",
+
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
   },
   "include": ["src"]
 }
