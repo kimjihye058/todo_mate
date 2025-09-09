@@ -1,6 +1,7 @@
 import { atom, useAtom } from "jotai";
 import { useState } from "react";
 import { css } from "@emotion/react";
+import { IconWorld, IconDots } from "@tabler/icons-react";
 
 const showTodoListAtom = atom(false);
 const todosAtom = atom<string[]>([]);
@@ -14,8 +15,9 @@ function Todo() {
     setShowTodoList((prev) => !prev);
   };
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // 한글일 때 두 번 나오는 것을 방지
     if (e.nativeEvent.isComposing) return;
-
+    // 엔터 입력시 자동으로 등록되도록
     if (e.key === "Enter" && inputValue.trim() !== "") {
       setTodos([...todos, inputValue.trim()]);
       setInputValue("");
@@ -33,17 +35,11 @@ function Todo() {
           background-color: #f2f2f2;
           padding: 8px 10px;
           margin-top: 8px;
+          gap: 5px;
         `}
         onClick={handleCategoryClick}
       >
-        <img
-          src="./images/feed/globalIcon.svg"
-          css={css`
-            width: 16px;
-            height: 16px;
-            margin-right: 5px;
-          `}
-        />
+        <IconWorld width={15} height={15} color="#979AA4" />
         <p
           css={css`
             font-family: Pretendard;
@@ -59,7 +55,6 @@ function Todo() {
           css={css`
             width: 20px;
             height: 20px;
-            margin-left: 5px;
           `}
         />
       </button>
@@ -119,13 +114,7 @@ function Todo() {
                 height: 20px;
               `}
             >
-              <img
-                src="./images/option/feedOptionMenuIcon.png"
-                css={css`
-                  width: 20px;
-                  height: 20px;
-                `}
-              />
+              <IconDots stroke={2} width={20} height={20} color="#ACACAC"/>
             </button>
           </div>
 
@@ -171,13 +160,7 @@ function Todo() {
                   height: 20px;
                 `}
               >
-                <img
-                  src="./images/option/feedOptionMenuIcon.png"
-                  css={css`
-                    width: 20px;
-                    height: 20px;
-                  `}
-                />
+                <IconDots stroke={2} width={20} height={20} color="#ACACAC"/>
               </button>
             </div>
           ))}
