@@ -25,7 +25,13 @@ function Todo() {
   };
 
   return (
-    <div>
+    <div
+      css={css`
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      `}
+    >
       <button
         css={css`
           border-radius: 50px;
@@ -34,7 +40,6 @@ function Todo() {
           align-items: center;
           background-color: #f2f2f2;
           padding: 8px 10px;
-          margin-top: 8px;
           gap: 5px;
         `}
         onClick={handleCategoryClick}
@@ -114,7 +119,7 @@ function Todo() {
                 height: 20px;
               `}
             >
-              <IconDots stroke={2} width={20} height={20} color="#ACACAC"/>
+              <IconDots stroke={2} width={20} height={20} color="#ACACAC" />
             </button>
           </div>
 
@@ -123,8 +128,10 @@ function Todo() {
               key={index}
               css={css`
                 display: flex;
-                justify-content: center;
+                justify-content: flex-start;
                 align-items: center;
+                width: 432px;
+                margin: 10px 0;
               `}
             >
               <button
@@ -149,6 +156,8 @@ function Todo() {
                   font-weight: 600;
                   font-size: 14px;
                   margin: 0;
+                  flex: 1;
+                  text-align: start;
                 `}
               >
                 {todo}
@@ -158,9 +167,10 @@ function Todo() {
                   background-color: white;
                   padding: 0;
                   height: 20px;
+                  margin-left: 10px;
                 `}
               >
-                <IconDots stroke={2} width={20} height={20} color="#ACACAC"/>
+                <IconDots stroke={2} width={20} height={20} color="#ACACAC" />
               </button>
             </div>
           ))}
