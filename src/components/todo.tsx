@@ -2,7 +2,12 @@ import { atom, useAtom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 import { useState } from "react";
 import { css } from "@emotion/react";
-import { IconWorld, IconDots } from "@tabler/icons-react";
+import {
+  IconWorld,
+  IconDots,
+  IconPencilMinus,
+  IconTrashX,
+} from "@tabler/icons-react";
 import { Sheet } from "react-modal-sheet";
 
 type TodoItem = {
@@ -16,6 +21,7 @@ const isOpenAtom = atom(false);
 
 // 로컬 스토리지에 저장되도록 atomWithStorage 사용
 const todosAtom = atomWithStorage<TodoItem[]>("todos", []);
+const selectedTodoAtom = atom<TodoItem | null>(null);
 
 function Todo() {
   const [showInput, setShowInput] = useAtom(showInputAtom);
@@ -23,6 +29,7 @@ function Todo() {
   const [inputValue, setInputValue] = useState("");
   const [nextId, setNextId] = useState(1);
   const [isOpen, setOpen] = useAtom(isOpenAtom);
+  const [selectedTodo, setSelectedTodo] = useAtom(selectedTodoAtom);
 
   const handleCategoryClick = () => {
     setShowInput((prev) => !prev); // 입력창만 토글
@@ -198,7 +205,10 @@ function Todo() {
                   {todo.text}
                 </p>
                 <button
-                  onClick={() => setOpen(true)}
+                  onClick={() => {
+                    setSelectedTodo(todo);
+                    setOpen(true);
+                  }}
                   css={css`
                     background-color: white;
                     padding: 0;
@@ -215,7 +225,64 @@ function Todo() {
       <Sheet isOpen={isOpen} onClose={() => setOpen(false)}>
         <Sheet.Container>
           <Sheet.Header />
-          <Sheet.Content>{/* Your sheet content goes here */}</Sheet.Content>
+          <Sheet.Content>
+            <p>{selectedTodo?.text}</p>
+            <div
+          css={css`
+            display: flex;
+            flex-direction: row;
+            gap: 50px;
+          `}>
+              <div
+                css={css`
+                  background-color: #f5f5f5;
+                  width: 222px;
+                  height: 68px;
+                  border-radius: 6px;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  flex-direction: column;
+                `}
+              >
+                <IconPencilMinus stroke={2} color="#5C85F7" />
+                <p
+                  css={css`
+                    color: #000;
+                    font-size: 14px;
+                    margin: 0;
+                    margin-top: 5px;
+                  `}
+                >
+                  수정
+                </p>
+              </div>
+              <div
+                css={css`
+                  background-color: #f5f5f5;
+                  width: 222px;
+                  height: 68px;
+                  border-radius: 6px;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  flex-direction: column;
+                `}
+              >
+                <IconTrashX stroke={2} color="#ED6863" />
+                <p
+                  css={css`
+                    color: #000;
+                    font-size: 14px;
+                    margin: 0;
+                    margin-top: 5px;
+                  `}
+                >
+                  삭제
+                </p>
+              </div>
+            </div>
+          </Sheet.Content>
         </Sheet.Container>
         <Sheet.Backdrop />
       </Sheet>
