@@ -1,4 +1,5 @@
 import { atom, useAtom } from "jotai";
+import { atomWithStorage } from "jotai/utils";
 import { useState } from "react";
 import { css } from "@emotion/react";
 import { IconWorld, IconDots } from "@tabler/icons-react";
@@ -10,13 +11,15 @@ type TodoItem = {
 };
 
 const showTodoListAtom = atom(false);
-const todosAtom = atom<TodoItem[]>([]);
+
+// 로컬 스토리지에 저장되도록 atomWithStorage 사용
+const todosAtom = atomWithStorage<TodoItem[]>("todos", []);
 
 function Todo() {
   const [showTodoList, setShowTodoList] = useAtom(showTodoListAtom);
   const [todos, setTodos] = useAtom(todosAtom);
   const [inputValue, setInputValue] = useState("");
-  const [nextId, setNextId] = useState(1); // 고유 아이디 지정해주는 용도
+  const [nextId, setNextId] = useState(1);
 
   const handleCategoryClick = () => {
     setShowTodoList((prev) => !prev);
