@@ -4,6 +4,7 @@ import { css } from "@emotion/react";
 import { IconWorld, IconDots } from "@tabler/icons-react";
 
 type TodoItem = {
+  id: number;
   text: string;
   completed: boolean;
 };
@@ -15,6 +16,7 @@ function Todo() {
   const [showTodoList, setShowTodoList] = useAtom(showTodoListAtom);
   const [todos, setTodos] = useAtom(todosAtom);
   const [inputValue, setInputValue] = useState("");
+  const [nextId, setNextId] = useState(1); // 고유 아이디 지정해주는 용도
 
   const handleCategoryClick = () => {
     setShowTodoList((prev) => !prev);
@@ -23,14 +25,18 @@ function Todo() {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.nativeEvent.isComposing) return;
     if (e.key === "Enter" && inputValue.trim() !== "") {
-      setTodos([...todos, { text: inputValue.trim(), completed: false }]);
+      setTodos([
+        ...todos,
+        { id: nextId, text: inputValue.trim(), completed: false },
+      ]);
+      setNextId(nextId + 1);
       setInputValue("");
     }
   };
 
-  const toggleTodo = (index: number) => {
-    const updated = todos.map((todo, i) =>
-      i === index ? { ...todo, completed: !todo.completed } : todo
+  const toggleTodo = (id: number) => {
+    const updated = todos.map((todo) =>
+      todo.id === id ? { ...todo, completed: !todo.completed } : todo
     );
     setTodos(updated);
   };
@@ -136,63 +142,65 @@ function Todo() {
             </button>
           </div>
 
-          {todos.map((todo, index) => (
-            <div
-              key={index}
-              css={css`
-                display: flex;
-                justify-content: flex-start;
-                align-items: center;
-                width: 432px;
-                margin: 10px 0;
-              `}
-            >
-              <button
-                onClick={() => toggleTodo(index)}
+          {[...todos]
+            .sort((a, b) => Number(a.completed) - Number(b.completed))
+            .map((todo) => (
+              <div
+                key={todo.id}
                 css={css`
-                  background-color: white;
-                  padding: 0;
-                  height: 21px;
-                  margin-right: 10px;
+                  display: flex;
+                  justify-content: flex-start;
+                  align-items: center;
+                  width: 432px;
+                  margin: 10px 0;
                 `}
               >
-                <img
-                  src={
-                    todo.completed
-                      ? "./images/feed/goalCompletedIcon.svg"
-                      : "./images/feed/goalIcon.svg"
-                  }
+                <button
+                  onClick={() => toggleTodo(todo.id)}
                   css={css`
-                    width: 21px;
+                    background-color: white;
+                    padding: 0;
                     height: 21px;
+                    margin-right: 10px;
                   `}
-                />
-              </button>
-              <p
-                css={css`
-                  font-family: Pretendard;
-                  font-weight: 400;
-                  font-size: 14px;
-                  margin: 0;
-                  flex: 1;
-                  text-align: start;
-                  color: "#000";
-                `}
-              >
-                {todo.text}
-              </p>
-              <button
-                css={css`
-                  background-color: white;
-                  padding: 0;
-                  height: 20px;
-                  margin-left: 10px;
-                `}
-              >
-                <IconDots stroke={2} width={20} height={20} color="#acacac" />
-              </button>
-            </div>
-          ))}
+                >
+                  <img
+                    src={
+                      todo.completed
+                        ? "./images/feed/goalCompletedIcon.svg"
+                        : "./images/feed/goalIcon.svg"
+                    }
+                    css={css`
+                      width: 21px;
+                      height: 21px;
+                    `}
+                  />
+                </button>
+                <p
+                  css={css`
+                    font-family: Pretendard;
+                    font-weight: 600;
+                    font-size: 14px;
+                    margin: 0;
+                    flex: 1;
+                    text-align: start;
+                    color: "#000";
+                  `}
+                >
+                  {todo.text}
+                </p>
+                <button
+                  css={css`
+                    background-color: white;
+                    padding: 0;
+                    height: 20px;
+                    margin-left: 10px;
+                  `}
+                >
+                  <IconDots stroke={2} width={20} height={20} color="#acacac" />
+                </button>
+              </div>
+            ))}
         </div>
       )}
     </div>
