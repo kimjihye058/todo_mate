@@ -41,6 +41,7 @@ function Todo() {
           background-color: #f2f2f2;
           padding: 8px 10px;
           gap: 5px;
+          margin-right: 339px;
         `}
         onClick={handleCategoryClick}
       >
