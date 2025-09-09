@@ -37,3 +37,8 @@ button {
   border: none;
   cursor: pointer;
 }
+*,
+*:focus,
+*:hover {
+  outline: none;
+}
