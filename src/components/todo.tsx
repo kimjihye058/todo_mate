@@ -54,6 +54,12 @@ function Todo() {
     setTodos(updated);
   };
 
+  const deleteTodo = (id: number) => {
+    setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
+    setSelectedTodo(null);
+    setOpen(false);
+  };
+
   const snapPoint = [0, 0.5, 1];
 
   return (
@@ -290,7 +296,7 @@ function Todo() {
                     align-items: center;
                     flex-direction: column;
                   `}
-                  onClick={() => setOpen(false)}
+                  onClick={() => selectedTodo && deleteTodo(selectedTodo.id)}
                 >
                   <IconTrashX stroke={2} color="#ED6863" />
                   <p
