@@ -54,6 +54,8 @@ function Todo() {
     setTodos(updated);
   };
 
+  const snapPoint = [0, 0.5, 1];
+
   return (
     <div
       css={css`
@@ -222,69 +224,91 @@ function Todo() {
             ))}
         </div>
       )}
-      <Sheet isOpen={isOpen} onClose={() => setOpen(false)}>
+      <Sheet
+        isOpen={isOpen}
+        onClose={() => setOpen(false)}
+        initialSnap={1}
+        snapPoints={snapPoint}
+      >
         <Sheet.Container>
           <Sheet.Header />
           <Sheet.Content>
-            <p>{selectedTodo?.text}</p>
             <div
-          css={css`
-            display: flex;
-            flex-direction: row;
-            gap: 50px;
-          `}>
-              <div
+              css={css`
+                justify-items: center;
+              `}
+            >
+              <p
                 css={css`
-                  background-color: #f5f5f5;
-                  width: 222px;
-                  height: 68px;
-                  border-radius: 6px;
-                  display: flex;
-                  justify-content: center;
-                  align-items: center;
-                  flex-direction: column;
+                  font-family: Pretendard;
+                  font-size: 20px;
+                  font-weight: 700;
                 `}
               >
-                <IconPencilMinus stroke={2} color="#5C85F7" />
-                <p
-                  css={css`
-                    color: #000;
-                    font-size: 14px;
-                    margin: 0;
-                    margin-top: 5px;
-                  `}
-                >
-                  수정
-                </p>
-              </div>
+                {selectedTodo?.text}
+              </p>
               <div
                 css={css`
-                  background-color: #f5f5f5;
-                  width: 222px;
-                  height: 68px;
-                  border-radius: 6px;
                   display: flex;
-                  justify-content: center;
-                  align-items: center;
-                  flex-direction: column;
+                  flex-direction: row;
+                  gap: 20px;
                 `}
               >
-                <IconTrashX stroke={2} color="#ED6863" />
-                <p
+                <div
                   css={css`
-                    color: #000;
-                    font-size: 14px;
-                    margin: 0;
-                    margin-top: 5px;
+                    background-color: #f5f5f5;
+                    width: 222px;
+                    height: 68px;
+                    border-radius: 6px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    flex-direction: column;
                   `}
+                  onClick={() => setOpen(false)}
                 >
-                  삭제
-                </p>
+                  <IconPencilMinus stroke={2} color="#5C85F7" />
+                  <p
+                    css={css`
+                      color: #000;
+                      font-size: 14px;
+                      margin: 0;
+                      margin-top: 5px;
+                    `}
+                  >
+                    수정하기
+                  </p>
+                </div>
+                <div
+                  css={css`
+                    background-color: #f5f5f5;
+                    width: 222px;
+                    height: 68px;
+                    border-radius: 6px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    flex-direction: column;
+                  `}
+                  onClick={() => setOpen(false)}
+                >
+                  <IconTrashX stroke={2} color="#ED6863" />
+                  <p
+                    css={css`
+                      color: #000;
+                      font-size: 14px;
+                      margin: 0;
+                      margin-top: 5px;
+                    `}
+                  >
+                    삭제하기
+                  </p>
+                </div>
               </div>
             </div>
           </Sheet.Content>
         </Sheet.Container>
-        <Sheet.Backdrop />
+        <Sheet.Backdrop onClick={() => setOpen(false)} />
       </Sheet>
     </div>
   );
