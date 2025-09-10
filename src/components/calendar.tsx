@@ -180,10 +180,13 @@ export const Calendar: FC = () => {
                         display: inline-flex;
                         justify-content: center;
                         align-items: center;
-                        width: 30px;
-                        height: 30px;
+                        width: 20px;
+                        height: 20px;
                         margin: 0 auto;
                         border-radius: 50%;
+                        font-family: Pretendard;
+                        font-size: 12px;
+                        font-weight: 400;
                         cursor: pointer;
                         ${isOtherMonth ? "opacity: 0.35;" : ""}
                         ${isSelected
