@@ -20,28 +20,7 @@ export const Calendar: FC<ICalendarProps> = ({ selectDate, setSelectDate }) => {
     []
   );
 
-  // 달력 날짜 생성하는 함수
-  const generateCalendarDates = useMemo(() => {
-    const startOfMonth = viewDate.startOf("month");
-    const endOfMonth = viewDate.endOf("month");
-    const startDate = startOfMonth.startOf("week");
-    const endDate = endOfMonth.endOf("week");
-
-    const dates = [];
-    let currentDate = startDate;
-
-    while (
-      currentDate.isBefore(endDate) ||
-      currentDate.isSame(endDate, "day")
-    ) {
-      dates.push(currentDate);
-      currentDate = currentDate.add(1, "day");
-    }
-
-    return dates;
-  }, [viewDate]);
-
-  const changeMonth = (changeString: string) => {
+  const changeMonth = (date: unknown, changeString: string) => {
     switch (changeString) {
       case "add":
         return setViewDate(viewDate.add(1, "month"));
@@ -50,11 +29,9 @@ export const Calendar: FC<ICalendarProps> = ({ selectDate, setSelectDate }) => {
       case "today":
         return setViewDate(dayjs());
       default:
-        return viewDate;
+        return date;
     }
   };
-
-  const today = dayjs();
 
   return (
     <div
@@ -97,7 +74,7 @@ export const Calendar: FC<ICalendarProps> = ({ selectDate, setSelectDate }) => {
               background-color: white;
               border: none;
             `}
-            onClick={() => changeMonth("subtract")}
+            onClick={() => changeMonth(viewDate, "subtract")}
           >
             <IconChevronLeft stroke={2} />
           </button>
@@ -109,7 +86,7 @@ export const Calendar: FC<ICalendarProps> = ({ selectDate, setSelectDate }) => {
               background-color: white;
               border: none;
             `}
-            onClick={() => changeMonth("add")}
+            onClick={() => changeMonth(viewDate, "add")}
           >
             <IconChevronRight stroke={2} />
           </button>
@@ -126,64 +103,16 @@ export const Calendar: FC<ICalendarProps> = ({ selectDate, setSelectDate }) => {
           padding: 0 14px;
         `}
       >
-        {weekDays.map((day) => (
-          <div key={day}>{day}</div>
+        {weekDays.map((day, i) => (
+          <div
+            key={i}
+            css={css`
+              color: ${i === 0 ? "#EC5E58" : i === 6 ? "#2F7CF6" : "black"};
+            `}
+          >
+            {day}
+          </div>
         ))}
-      </div>
-
-      <div
-        css={css`
-          display: grid;
-          grid-template-columns: repeat(7, 1fr);
-          padding: 0 14px;
-        `}
-      >
-        {generateCalendarDates.map((date) => {
-          const isToday = date.isSame(today, "day");
-          const isCurrentMonth = date.isSame(viewDate, "month");
-          const isSelected = date.isSame(selectDate, "day");
-
-          return (
-            <div
-              key={date.format("YYYY-MM-DD")}
-              css={css`
-                width: 21px;
-                height: 35px;
-                margin: 8px auto;
-                display: flex;
-                flex-direction: column;
-                text-align: center;
-                cursor: pointer;
-              `}
-              onClick={() => setSelectDate(date)}
-            >
-              <p
-                css={css`
-                  color: ${
-                    isSelected
-                      ? "white"
-                      : isToday
-                      ? "black"
-                      : !isCurrentMonth
-                      ? "#DADDE1"
-                      : "black"
-                  };
-                  background-color: ${
-                    isSelected
-                      ? "black"
-                      : isToday
-                      ? "#DADDE1"
-                      : "transparent"
-                  };
-                  border-radius: ${isSelected || isToday ? "50%" : "0"};
-                  width: 20px;
-                `}
-              >
-                {date.date()}
-              </p>
-            </div>
-          );
-        })}
       </div>
     </div>
   );
