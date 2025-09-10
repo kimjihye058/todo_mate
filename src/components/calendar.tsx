@@ -21,7 +21,8 @@ export const Calendar: FC = () => {
   const [viewDate, setViewDate] = useAtom(viewDateAtom);
 
   const startWeek = viewDate.startOf("month").week();
-  const endWeek = viewDate.endOf("month").week() === 1 ? 53 : viewDate.endOf("month").week();
+  const endWeek =
+    viewDate.endOf("month").week() === 1 ? 53 : viewDate.endOf("month").week();
 
   const weekDays = useMemo(
     () => ["일", "월", "화", "수", "목", "금", "토"],
@@ -142,11 +143,24 @@ export const Calendar: FC = () => {
               margin-bottom: 6px;
             `}
           >
-            {Array.from({ length: 7 }, (_, i) => i).map((i) => {
+            {Array.from({ length: 7 }, (_, i) => {
               const current = viewDate.week(week).startOf("week").add(i, "day");
+
               const isSelected = fmt(selectDate) === fmt(current);
               const isToday = fmt(dayjs()) === fmt(current);
               const isOtherMonth = fmtMonth(current) !== fmtMonth(viewDate);
+
+              // 다른 달일 때 비우기
+              if (isOtherMonth) {
+                return (
+                  <div
+                    key={`${week}_${i}`}
+                    css={css`
+                      height: 30px;
+                    `}
+                  />
+                );
+              }
 
               return (
                 <div key={`${week}_${i}`}>
