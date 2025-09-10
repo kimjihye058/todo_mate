@@ -180,6 +180,31 @@ export const Calendar: FC = () => {
                     `}
                   >
                     <div
+                      css={css`
+                        height: 21px;
+                        position: relative;
+                        cursor: pointer;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        margin-bottom: 4px;
+                      `}
+                    >
+                      <span
+                        css={css`
+                          position: absolute;
+                          padding-top: 3px;
+                          font-size: 13px;
+                          font-family: Pretendard;
+                          text-shadow: rgba(0, 0, 0, 0.2) 0px 0px 5px;
+                          font-weight: 700;
+                          color: white;
+                        `}
+                      >
+                        {todayUnachieved}
+                      </span>
+                    </div>
+                    <div
                       onClick={() => setSelectDate(current)}
                       css={css`
                         display: inline-flex;
