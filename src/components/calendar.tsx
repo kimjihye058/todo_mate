@@ -5,8 +5,9 @@ import dayjs from "dayjs";
 import weekday from "dayjs/plugin/weekday";
 import isoWeek from "dayjs/plugin/isoWeek";
 import weekOfYear from "dayjs/plugin/weekOfYear";
-import { atom, useAtom } from "jotai";
+import { atom, useAtom, useAtomValue } from "jotai";
 import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
+import { achievedThisMonthAtom, todayUnachievedAtom } from "./todoAtom";
 
 dayjs.extend(weekOfYear);
 dayjs.extend(isoWeek);
@@ -42,6 +43,9 @@ export const Calendar: FC = () => {
   const fmt = (d: dayjs.Dayjs) => d.format("YYYY-MM-DD");
   const fmtMonth = (d: dayjs.Dayjs) => d.format("MM");
 
+  const achievedThisMonth = useAtomValue(achievedThisMonthAtom);
+  const todayUnachieved = useAtomValue(todayUnachievedAtom);
+
   return (
     <div
       css={css`
@@ -71,6 +75,7 @@ export const Calendar: FC = () => {
             src="./images/calendar/calendarVictoryIcon.svg"
             alt="완료한 개수"
           />
+          <p>{achievedThisMonth}</p>
         </div>
 
         <div>

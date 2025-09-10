@@ -1,5 +1,4 @@
 import { atom, useAtom } from "jotai";
-import { atomWithStorage } from "jotai/utils";
 import { useState } from "react";
 import { css } from "@emotion/react";
 import {
@@ -10,14 +9,10 @@ import {
 } from "@tabler/icons-react";
 import { Sheet } from "react-modal-sheet";
 import dayjs from "dayjs";
-
-type TodoItem = {
-  id: number;
-  text: string;
-  completed: boolean;
-  categoryId: number;
-  date: string;
-};
+import {
+  todosAtom,
+  selectedTodoAtom,
+} from "./todoAtom";
 
 type Category = {
   id: number;
@@ -27,10 +22,6 @@ type Category = {
 
 const showInputAtom = atom<Record<number, boolean>>({});
 const isOpenAtom = atom(false);
-
-// 로컬 스토리지에 저장되도록 atomWithStorage 사용
-const todosAtom = atomWithStorage<TodoItem[]>("todos", []);
-const selectedTodoAtom = atom<TodoItem | null>(null);
 
 function Todo() {
   const [showInputs, setShowInputs] = useAtom(showInputAtom);
@@ -56,9 +47,9 @@ function Todo() {
       [categoryId]: !prev[categoryId],
     }));
   };
-  
-  const today = dayjs();
-  const formattedDate = today.format('YYYY-MM-DD');
+
+  const today = dayjs(); // 오늘 날짜
+  const formattedDate = today.format("YYYY-MM-DD"); // 이번 달 정보
 
   const handleKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
@@ -74,7 +65,7 @@ function Todo() {
           text: inputValue.trim(),
           completed: false,
           categoryId,
-          date: formattedDate
+          date: formattedDate,
         },
       ]);
       setInputValues((prev) => ({ ...prev, [categoryId]: "" }));
