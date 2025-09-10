@@ -7,7 +7,7 @@ import isoWeek from "dayjs/plugin/isoWeek";
 import weekOfYear from "dayjs/plugin/weekOfYear";
 import { atom, useAtom, useAtomValue } from "jotai";
 import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
-import { achievedThisMonthAtom, todayUnachievedAtom } from "./todoAtom";
+import { achievedThisMonthAtom, unachievedByDateAtom } from "./todoAtom";
 
 dayjs.extend(weekOfYear);
 dayjs.extend(isoWeek);
@@ -44,7 +44,7 @@ export const Calendar: FC = () => {
   const fmtMonth = (d: dayjs.Dayjs) => d.format("MM");
 
   const achievedThisMonth = useAtomValue(achievedThisMonthAtom);
-  const todayUnachieved = useAtomValue(todayUnachievedAtom);
+  const unachievedByDate = useAtomValue(unachievedByDateAtom);
 
   return (
     <div
@@ -201,7 +201,7 @@ export const Calendar: FC = () => {
                           color: white;
                         `}
                       >
-                        {todayUnachieved}
+                        {unachievedByDate[fmt(current)] || ""}
                       </span>
                     </div>
                     <div

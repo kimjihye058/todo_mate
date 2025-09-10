@@ -49,9 +49,6 @@ function Todo() {
     }));
   };
 
-  const today = dayjs(); // 오늘 날짜
-  const formattedDate = today.format("YYYY-MM-DD"); // 이번 달 정보
-
   const handleKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
     categoryId: number
@@ -66,7 +63,7 @@ function Todo() {
           text: inputValue.trim(),
           completed: false,
           categoryId,
-          date: formattedDate,
+          date: formattedSelectDate,
         },
       ]);
       setInputValues((prev) => ({ ...prev, [categoryId]: "" }));

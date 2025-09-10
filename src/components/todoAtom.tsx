@@ -28,15 +28,15 @@ export const achievedThisMonthAtom = atom((get) => {
   ).length;
 });
 
-// 오늘 이루지 못한 목표 개수
-export const todayUnachievedAtom = atom((get) => {
+// 날짜별 못 이룬 목표 개수
+export const unachievedByDateAtom = atom((get) => {
   const todos = get(todosAtom);
-  const today = dayjs().format("YYYY-MM-DD");
-  const todayTotal = todos.filter((todo) => todo.date === today).length;
-  const todayAchieved = todos.filter(
-    (todo) => todo.date === today && todo.completed
-  ).length;
-  const todayUnachieved = todayTotal - todayAchieved;
-  if(todayUnachieved === 0) return null;
-  return todayUnachieved;
+
+  return todos.reduce<Record<string, number>>((acc, todo) => {
+    // { "2025-09-10": 2, "2025-09-11": 1, ... } 이런 식으로..
+    if (!todo.completed) {
+      acc[todo.date] = (acc[todo.date] || 0) + 1;
+    }
+    return acc;
+  }, {});
 });
