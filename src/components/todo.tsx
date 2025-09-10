@@ -38,10 +38,10 @@ function Todo() {
   const [selectedTodo, setSelectedTodo] = useAtom(selectedTodoAtom);
 
   const categoryData: Category[] = [
-    { id: 1, category: "공부", color: "#5e9d68" },
-    { id: 2, category: "취미", color: "#5C85F7" },
-    { id: 3, category: "약속", color: "#ED6863" },
-    { id: 4, category: "기타", color: "#FF9F40" },
+    { id: 1, category: "공부", color: "--category-1-color" },
+    { id: 2, category: "취미", color: "--category-2-color" },
+    { id: 3, category: "약속", color: "--category-3-color" },
+    { id: 4, category: "기타", color: "--category-4-color" },
   ];
 
   const getNextId = () => {
@@ -134,7 +134,7 @@ function Todo() {
                 font-weight: 600;
                 font-size: 14px;
                 margin: 0;
-                color: ${category.color};
+                color: var(${category.color});
               `}
             >
               {category.category}
@@ -182,7 +182,7 @@ function Todo() {
                 onKeyDown={(e) => handleKeyDown(e, category.id)}
                 css={css`
                   border: none;
-                  border-bottom: 2px solid ${category.color};
+                  border-bottom: 2px solid var(${category.color});
                   width: 377px;
                   height: 40px;
                   ::placeholder {
