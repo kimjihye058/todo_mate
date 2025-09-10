@@ -203,6 +203,42 @@ export const Calendar: FC = () => {
                       >
                         {unachievedByDate[fmt(current)] || ""}
                       </span>
+                      <svg
+                        css={css`
+                          width: 21px;
+                          height: 21px;
+                          fill: none;
+                        `}
+                      >
+                        <circle
+                          cx={6.46154}
+                          cy={6.46154}
+                          r={6.46154}
+                          fill="rgb(219, 221, 223)"
+                          fillOpacity={1}
+                        ></circle>
+                        <circle
+                          cx={6.46154}
+                          cy={14.5387}
+                          r={6.46154}
+                          fill="rgb(219, 221, 223)"
+                          fillOpacity={1}
+                        ></circle>
+                        <circle
+                          cx={14.5387}
+                          cy={14.5387}
+                          r={6.46154}
+                          fill="rgb(219, 221, 223)"
+                          fillOpacity={1}
+                        ></circle>
+                        <circle
+                          cx={14.5387}
+                          cy={6.46154}
+                          r={6.46154}
+                          fill="rgb(219, 221, 223)"
+                          fillOpacity={1}
+                        ></circle>
+                      </svg>
                     </div>
                     <div
                       onClick={() => setSelectDate(current)}
