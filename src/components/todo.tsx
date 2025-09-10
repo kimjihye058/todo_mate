@@ -41,34 +41,42 @@ function Todo() {
     { id: 1, category: "공부", color: "#5e9d68" },
     { id: 2, category: "취미", color: "#5C85F7" },
     { id: 3, category: "약속", color: "#ED6863" },
-    { id: 4, category: "기타", color: "#FF9F40" }
+    { id: 4, category: "기타", color: "#FF9F40" },
   ];
 
   const getNextId = () => {
-    return todos.length > 0 ? Math.max(...todos.map(todo => todo.id)) + 1 : 1;
+    return todos.length > 0 ? Math.max(...todos.map((todo) => todo.id)) + 1 : 1;
   };
 
   const handleCategoryClick = (categoryId: number) => {
     setShowInputs((prev) => ({
       ...prev,
-      [categoryId]: !prev[categoryId]
+      [categoryId]: !prev[categoryId],
     }));
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, categoryId: number) => {
+  const handleKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    categoryId: number
+  ) => {
     if (e.nativeEvent.isComposing) return;
-    const inputValue = inputValues[categoryId] || '';
+    const inputValue = inputValues[categoryId] || "";
     if (e.key === "Enter" && inputValue.trim() !== "") {
       setTodos([
         ...todos,
-        { id: getNextId(), text: inputValue.trim(), completed: false, categoryId },
+        {
+          id: getNextId(),
+          text: inputValue.trim(),
+          completed: false,
+          categoryId,
+        },
       ]);
-      setInputValues(prev => ({ ...prev, [categoryId]: '' }));
+      setInputValues((prev) => ({ ...prev, [categoryId]: "" }));
     }
   };
 
   const handleInputChange = (categoryId: number, value: string) => {
-    setInputValues(prev => ({ ...prev, [categoryId]: value }));
+    setInputValues((prev) => ({ ...prev, [categoryId]: value }));
   };
 
   const toggleTodo = (id: number) => {
@@ -96,7 +104,8 @@ function Todo() {
       `}
     >
       {categoryData.map((category) => (
-        <div key={category.id}
+        <div
+          key={category.id}
           css={css`
             display: flex;
             flex-direction: column;
@@ -168,7 +177,7 @@ function Todo() {
               <input
                 type="text"
                 placeholder="할 일 입력"
-                value={inputValues[category.id] || ''}
+                value={inputValues[category.id] || ""}
                 onChange={(e) => handleInputChange(category.id, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(e, category.id)}
                 css={css`
@@ -197,10 +206,15 @@ function Todo() {
           )}
 
           {/* 해당 카테고리의 리스트 */}
-          {todos.filter(todo => todo.categoryId === category.id).length > 0 && (
-            <div css={css`margin-top: 10px;`}>
+          {todos.filter((todo) => todo.categoryId === category.id).length >
+            0 && (
+            <div
+              css={css`
+                margin-top: 10px;
+              `}
+            >
               {todos
-                .filter(todo => todo.categoryId === category.id)
+                .filter((todo) => todo.categoryId === category.id)
                 .sort((a, b) => Number(a.completed) - Number(b.completed))
                 .map((todo) => (
                   <div
@@ -259,7 +273,12 @@ function Todo() {
                         margin-left: 10px;
                       `}
                     >
-                      <IconDots stroke={2} width={20} height={20} color="#acacac" />
+                      <IconDots
+                        stroke={2}
+                        width={20}
+                        height={20}
+                        color="#acacac"
+                      />
                     </button>
                   </div>
                 ))}
@@ -267,14 +286,21 @@ function Todo() {
           )}
         </div>
       ))}
-      
+
       <Sheet
         isOpen={isOpen}
         onClose={() => setOpen(false)}
         initialSnap={1}
         snapPoints={snapPoint}
       >
-        <Sheet.Container>
+        <Sheet.Container
+          style={{
+            left: "25%",
+            transform: "translate(-50%, -50%)",
+            width: "50%",
+            height: "100%",
+          }}
+        >
           <Sheet.Header />
           <Sheet.Content>
             <div
