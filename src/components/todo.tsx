@@ -9,12 +9,14 @@ import {
   IconTrashX,
 } from "@tabler/icons-react";
 import { Sheet } from "react-modal-sheet";
+import dayjs from "dayjs";
 
 type TodoItem = {
   id: number;
   text: string;
   completed: boolean;
   categoryId: number;
+  date: string;
 };
 
 type Category = {
@@ -54,6 +56,9 @@ function Todo() {
       [categoryId]: !prev[categoryId],
     }));
   };
+  
+  const today = dayjs();
+  const formattedDate = today.format('YYYY-MM-DD');
 
   const handleKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
@@ -69,6 +74,7 @@ function Todo() {
           text: inputValue.trim(),
           completed: false,
           categoryId,
+          date: formattedDate
         },
       ]);
       setInputValues((prev) => ({ ...prev, [categoryId]: "" }));
