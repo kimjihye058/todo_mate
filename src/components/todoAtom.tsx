@@ -16,6 +16,9 @@ export const todosAtom = atomWithStorage<TodoItem[]>("todos", []);
 // 선택된 todo
 export const selectedTodoAtom = atom<TodoItem | null>(null);
 
+// 선택된 날짜 (기본값은 오늘)
+export const selectDateAtom = atom<string>(dayjs().format("YYYY-MM-DD"));
+
 // 이번 달 이룬 목표 개수
 export const achievedThisMonthAtom = atom((get) => {
   const todos = get(todosAtom);
@@ -33,5 +36,7 @@ export const todayUnachievedAtom = atom((get) => {
   const todayAchieved = todos.filter(
     (todo) => todo.date === today && todo.completed
   ).length;
-  return todayTotal - todayAchieved;
+  const todayUnachieved = todayTotal - todayAchieved;
+  if(todayUnachieved === 0) return null;
+  return todayUnachieved;
 });

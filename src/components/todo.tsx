@@ -9,10 +9,8 @@ import {
 } from "@tabler/icons-react";
 import { Sheet } from "react-modal-sheet";
 import dayjs from "dayjs";
-import {
-  todosAtom,
-  selectedTodoAtom,
-} from "./todoAtom";
+import { todosAtom, selectedTodoAtom } from "./todoAtom";
+import { selectDateAtom } from "./Calendar";
 
 type Category = {
   id: number;
@@ -29,6 +27,9 @@ function Todo() {
   const [inputValues, setInputValues] = useState<Record<number, string>>({});
   const [isOpen, setOpen] = useAtom(isOpenAtom);
   const [selectedTodo, setSelectedTodo] = useAtom(selectedTodoAtom);
+  const [selectDate] = useAtom(selectDateAtom);
+
+  const formattedSelectDate = dayjs(selectDate).format("YYYY-MM-DD"); // 문자열 비교용
 
   const categoryData: Category[] = [
     { id: 1, category: "공부", color: "--category-1-color" },
@@ -203,15 +204,22 @@ function Todo() {
           )}
 
           {/* 해당 카테고리의 리스트 */}
-          {todos.filter((todo) => todo.categoryId === category.id).length >
-            0 && (
+          {todos.filter(
+            (todo) =>
+              todo.categoryId === category.id &&
+              todo.date === formattedSelectDate // 날짜 조건
+          ).length > 0 && (
             <div
               css={css`
                 margin-top: 10px;
               `}
             >
               {todos
-                .filter((todo) => todo.categoryId === category.id)
+                .filter(
+                  (todo) =>
+                    todo.categoryId === category.id &&
+                    todo.date === formattedSelectDate // 날짜 조건
+                )
                 .sort((a, b) => Number(a.completed) - Number(b.completed))
                 .map((todo) => (
                   <div
