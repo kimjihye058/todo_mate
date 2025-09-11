@@ -1,5 +1,5 @@
 import { atom, useAtom } from "jotai";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { css } from "@emotion/react";
 import {
   IconWorld,
@@ -19,11 +19,10 @@ type Category = {
   color: string;
 };
 
-const showInputAtom = atom<Record<number, boolean>>({});
+const showInputAtom = atom<number | null>(null); // 현재 열려있는 categoryId (없으면 null)
 const isOpenAtom = atom(false);
 
 function Todo() {
-  const [showInputs, setShowInputs] = useAtom(showInputAtom);
   const [todos, setTodos] = useAtom(todosAtom);
   const [inputValues, setInputValues] = useState<Record<number, string>>({});
   const [isOpen, setOpen] = useAtom(isOpenAtom);
@@ -43,12 +42,25 @@ function Todo() {
     return todos.length > 0 ? Math.max(...todos.map((todo) => todo.id)) + 1 : 1;
   };
 
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const [showInputs, setShowInputs] = useAtom(showInputAtom);
+
   const handleCategoryClick = (categoryId: number) => {
-    setShowInputs((prev) => ({
-      ...prev,
-      [categoryId]: !prev[categoryId],
-    }));
+    setShowInputs((prev) => (prev === categoryId ? null : categoryId));
   };
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(e.target as Node)
+      ) {
+        setShowInputs(null); // 바깥 클릭시 전부 닫힘
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, [setShowInputs]);
 
   const handleKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
@@ -92,6 +104,7 @@ function Todo() {
 
   return (
     <div
+      ref={wrapperRef}
       css={css`
         display: flex;
         flex-direction: column;
@@ -145,7 +158,7 @@ function Todo() {
           </button>
 
           {/* 입력창(토글) */}
-          {showInputs[category.id] && (
+          {showInputs === category.id && (
             <div
               css={css`
                 display: flex;
