@@ -7,4 +7,3 @@
 - [tabler-icons](https://tabler.io/icons)
 - [react-modal-sheet](https://github.com/Temzasse/react-modal-sheet)
 - [dayjs](https://dayjs.org/)
-- [ex-toolkit](https://es-toolkit.dev/)
