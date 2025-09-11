@@ -209,7 +209,7 @@ function Todo() {
         isOpen={isOpen}
         onClose={() => setOpen(false)}
         initialSnap={1}
-        snapPoints={snapPoint}
+        detent="content"
       >
         <Sheet.Container
           style={{
@@ -217,6 +217,7 @@ function Todo() {
             transform: "translate(-50%, -50%)",
             width: "50%",
             height: "100%",
+            paddingBottom: "120px"
           }}
         >
           <Sheet.Header />
