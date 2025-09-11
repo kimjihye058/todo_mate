@@ -1,5 +1,5 @@
 import { atom, useAtom } from "jotai";
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { css } from "@emotion/react";
 import {
   IconWorld,
@@ -22,14 +22,17 @@ type Category = {
 
 const showInputAtom = atom<number | null>(null);
 const isOpenAtom = atom(false);
+const inputValuesAtom = atom<Record<number, string>>({});
 
 function Todo() {
   const [todos, setTodos] = useAtom(todosAtom);
-  const [inputValues, setInputValues] = useState<Record<number, string>>({});
+  const [inputValues, setInputValues] = useAtom(inputValuesAtom);
   const [isOpen, setOpen] = useAtom(isOpenAtom);
   const [selectedTodo, setSelectedTodo] = useAtom(selectedTodoAtom);
   const [selectDate] = useAtom(selectDateAtom);
+  const [showInputs, setShowInputs] = useAtom(showInputAtom);
 
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const formattedSelectDate = dayjs(selectDate).format("YYYY-MM-DD");
 
   const categoryData: Category[] = [
@@ -42,9 +45,6 @@ function Todo() {
   const getNextId = () => {
     return todos.length > 0 ? Math.max(...todos.map((todo) => todo.id)) + 1 : 1;
   };
-
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const [showInputs, setShowInputs] = useAtom(showInputAtom);
 
   const handleCategoryClick = (categoryId: number) => {
     setShowInputs((prev) => (prev === categoryId ? null : categoryId));
