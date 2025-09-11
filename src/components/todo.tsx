@@ -6,6 +6,7 @@ import {
   IconDots,
   IconPencilMinus,
   IconTrashX,
+  IconCheck,
 } from "@tabler/icons-react";
 import { Sheet } from "react-modal-sheet";
 import dayjs from "dayjs";
@@ -161,13 +162,42 @@ function Todo() {
                   margin-right: 10px;
                 `}
               >
-                <img
-                  src="./images/feed/goalIcon.svg"
+                <svg
                   css={css`
                     width: 21px;
                     height: 21px;
+                    fill: none;
                   `}
-                />
+                >
+                  <circle
+                    cx={6.46154}
+                    cy={6.46154}
+                    r={6.46154}
+                    fill="rgb(219, 221, 223)"
+                    fillOpacity={1}
+                  ></circle>
+                  <circle
+                    cx={6.46154}
+                    cy={14.5387}
+                    r={6.46154}
+                    fill="rgb(219, 221, 223)"
+                    fillOpacity={1}
+                  ></circle>
+                  <circle
+                    cx={14.5387}
+                    cy={14.5387}
+                    r={6.46154}
+                    fill="rgb(219, 221, 223)"
+                    fillOpacity={1}
+                  ></circle>
+                  <circle
+                    cx={14.5387}
+                    cy={6.46154}
+                    r={6.46154}
+                    fill="rgb(219, 221, 223)"
+                    fillOpacity={1}
+                  ></circle>
+                </svg>
               </button>
               <input
                 type="text"
@@ -235,45 +265,75 @@ function Todo() {
                         background-color: white;
                         padding: 0;
                         height: 21px;
-                        margin-right: 10px;
                       `}
                     >
                       <svg
-                        css={css`
-                          width: 21px;
-                          height: 21px;
-                          fill: none;
-                        `}
+                        style={{
+                          width: "21px",
+                          height: "21px",
+                        }}
                       >
                         <circle
                           cx={6.46154}
                           cy={6.46154}
                           r={6.46154}
-                          fill="rgb(219, 221, 223)"
+                          fill={
+                            todo.completed
+                              ? `var(${category.color})`
+                              : "rgb(219, 221, 223)"
+                          }
                           fillOpacity={1}
                         ></circle>
                         <circle
                           cx={6.46154}
                           cy={14.5387}
                           r={6.46154}
-                          fill="rgb(219, 221, 223)"
+                          fill={
+                            todo.completed
+                              ? `var(${category.color})`
+                              : "rgb(219, 221, 223)"
+                          }
                           fillOpacity={1}
                         ></circle>
                         <circle
                           cx={14.5387}
                           cy={14.5387}
                           r={6.46154}
-                          fill="rgb(219, 221, 223)"
+                          fill={
+                            todo.completed
+                              ? `var(${category.color})`
+                              : "rgb(219, 221, 223)"
+                          }
                           fillOpacity={1}
                         ></circle>
                         <circle
                           cx={14.5387}
                           cy={6.46154}
                           r={6.46154}
-                          fill="rgb(219, 221, 223)"
+                          fill={
+                            todo.completed
+                              ? `var(${category.color})`
+                              : "rgb(219, 221, 223)"
+                          }
                           fillOpacity={1}
                         ></circle>
                       </svg>
+                      {todo.completed && (
+                        <IconCheck
+                          stroke={3}
+                          css={css`
+                            height: 13px;
+                            width: 13px;
+                            position: absolute;
+
+                            position: relative;
+                            left: -17px;
+                            top: -4px;
+                            color: white;
+                            z-index: 99;
+                          `}
+                        />
+                      )}
                     </button>
                     <p
                       css={css`
