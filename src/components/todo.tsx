@@ -123,36 +123,6 @@ function Todo() {
             />
           </button>
 
-          {/* 입력창(토글) */}
-          {showInputs === category.id && (
-            <div css={styles.inputContainer}>
-              <button css={styles.checkboxButton}>
-                <TodoIconSvg colors={[]} />
-              </button>
-              <input
-                type="text"
-                placeholder="할 일 입력"
-                value={inputValues[category.id] || ""}
-                onChange={(e) => handleInputChange(category.id, e.target.value)}
-                onKeyDown={(e) => handleKeyDown(e, category.id)}
-                css={[
-                  styles.todoInput,
-                  {
-                    borderBottom: `2px solid var(${category.color})`,
-                  },
-                ]}
-              />
-              <button css={styles.dotsButton}>
-                <IconDots
-                  stroke={2}
-                  width={20}
-                  height={20}
-                  color="var(--todo-dots-color)"
-                />
-              </button>
-            </div>
-          )}
-
           {/* 해당 카테고리의 리스트 */}
           {todos.filter(
             (todo) =>
@@ -201,6 +171,38 @@ function Todo() {
                     </button>
                   </div>
                 ))}
+
+              {/* 입력창(토글) */}
+              {showInputs === category.id && (
+                <div css={styles.inputContainer}>
+                  <button css={styles.checkboxButton}>
+                    <TodoIconSvg colors={[]} />
+                  </button>
+                  <input
+                    type="text"
+                    placeholder="할 일 입력"
+                    value={inputValues[category.id] || ""}
+                    onChange={(e) =>
+                      handleInputChange(category.id, e.target.value)
+                    }
+                    onKeyDown={(e) => handleKeyDown(e, category.id)}
+                    css={[
+                      styles.todoInput,
+                      {
+                        borderBottom: `2px solid var(${category.color})`,
+                      },
+                    ]}
+                  />
+                  <button css={styles.dotsButton}>
+                    <IconDots
+                      stroke={2}
+                      width={20}
+                      height={20}
+                      color="var(--todo-dots-color)"
+                    />
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -294,7 +296,6 @@ const styles = {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 10px;
   `,
 
   checkboxButton: css`
@@ -315,7 +316,7 @@ const styles = {
   todoInput: css`
     border: none;
     width: 377px;
-    height: 40px;
+    height: 21px;
     outline: none;
 
     &::placeholder {
