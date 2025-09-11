@@ -256,9 +256,12 @@ export const Calendar: FC = () => {
                         cursor: pointer;
                         ${isOtherMonth ? "opacity: 0.35;" : ""}
                         ${isSelected
-                          ? "background: black; color: white; font-weight: 700;"
-                          : ""}
-                          ${!isSelected && isToday
+                          ? i === 0
+                            ? "background: black; color: #EC5E58; font-weight: 700;"
+                            : i === 6
+                            ? "background: black; color: #2F7CF6; font-weight: 700;"
+                            : "background: black; color: white; font-weight: 700;"
+                          : isToday
                           ? "background: #DADDE1; color: black; font-weight: 700;"
                           : ""}
                       `}
