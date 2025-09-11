@@ -338,7 +338,7 @@ function Todo() {
                     <p
                       css={css`
                         font-family: Pretendard;
-                        font-weight: 600;
+                        font-weight: 400;
                         font-size: 14px;
                         margin: 0;
                         flex: 1;
