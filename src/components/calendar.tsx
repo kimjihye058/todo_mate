@@ -7,7 +7,11 @@ import isoWeek from "dayjs/plugin/isoWeek";
 import weekOfYear from "dayjs/plugin/weekOfYear";
 import { atom, useAtom, useAtomValue } from "jotai";
 import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
-import { achievedThisMonthAtom, unachievedByDateAtom } from "./todoAtom";
+import {
+  achievedThisMonthAtom,
+  unachievedByDateAtom,
+  todosAtom,
+} from "./todoAtom";
 import TodoIconSvg from "./todoIconSvg";
 
 dayjs.extend(weekOfYear);
@@ -20,6 +24,7 @@ const viewDateAtom = atom(dayjs());
 export const Calendar: FC = () => {
   const [selectDate, setSelectDate] = useAtom(selectDateAtom);
   const [viewDate, setViewDate] = useAtom(viewDateAtom);
+  const todos = useAtomValue(todosAtom);
 
   const startWeek = viewDate.startOf("month").week();
   const endWeek =
@@ -29,6 +34,13 @@ export const Calendar: FC = () => {
     () => ["일", "월", "화", "수", "목", "금", "토"],
     []
   );
+
+  const categoryColors = {
+    1: "var(--category-1-color)",
+    2: "var(--category-2-color)",
+    3: "var(--category-3-color)",
+    4: "var(--category-4-color)",
+  };
 
   const changeMonth = (type: "add" | "subtract" | "today") => {
     if (type === "add") {
@@ -45,6 +57,19 @@ export const Calendar: FC = () => {
 
   const achievedThisMonth = useAtomValue(achievedThisMonthAtom);
   const unachievedByDate = useAtomValue(unachievedByDateAtom);
+
+  const getColorsForDate = (dateStr: string): string[] => {
+    const todosForDate = todos.filter(
+      (todo) => todo.date === dateStr && todo.completed
+    );
+    const uniqueCategories = [
+      ...new Set(todosForDate.map((todo) => todo.categoryId)),
+    ];
+
+    return uniqueCategories.map(
+      (categoryId) => categoryColors[categoryId as keyof typeof categoryColors]
+    );
+  };
 
   return (
     <div css={styles.container}>
@@ -111,6 +136,8 @@ export const Calendar: FC = () => {
                 return <div key={`${week}_${i}`} css={styles.emptyDateCell} />;
               }
 
+              const dateColors = getColorsForDate(fmt(current));
+
               return (
                 <button
                   key={`${week}_${i}`}
@@ -134,7 +161,7 @@ export const Calendar: FC = () => {
                       <span css={styles.unachievedCount}>
                         {unachievedByDate[fmt(current)] || ""}
                       </span>
-                      <TodoIconSvg />
+                      <TodoIconSvg colors={dateColors} />
                     </div>
                     <div
                       css={[

@@ -127,7 +127,7 @@ function Todo() {
           {showInputs === category.id && (
             <div css={styles.inputContainer}>
               <button css={styles.checkboxButton}>
-                <TodoIconSvg />
+                <TodoIconSvg colors={[]} />
               </button>
               <input
                 type="text"
@@ -174,11 +174,11 @@ function Todo() {
                       css={styles.checkboxButton}
                     >
                       <TodoIconSvg
-                        color={
+                        colors={[
                           todo.completed
                             ? `var(${category.color})`
-                            : "var(--category-main-color)"
-                        }
+                            : "var(--category-main-color)",
+                        ]}
                       />
                       {todo.completed && (
                         <IconCheck stroke={3} css={styles.checkIcon} />
