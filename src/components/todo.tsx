@@ -278,6 +278,7 @@ function Todo() {
                         background-color: white;
                         padding: 0;
                         height: 21px;
+                        margin-right: 10px;
                       `}
                     >
                       <svg
@@ -344,6 +345,7 @@ function Todo() {
                             top: -4px;
                             color: white;
                             z-index: 99;
+                            margin-right: -13px;
                           `}
                         />
                       )}
