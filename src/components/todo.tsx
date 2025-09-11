@@ -12,6 +12,7 @@ import { Sheet } from "react-modal-sheet";
 import dayjs from "dayjs";
 import { todosAtom, selectedTodoAtom } from "./todoAtom";
 import { selectDateAtom } from "./Calendar";
+import TodoIconSvg from "./todoIconSvg";
 
 type Category = {
   id: number;
@@ -126,36 +127,7 @@ function Todo() {
           {showInputs === category.id && (
             <div css={styles.inputContainer}>
               <button css={styles.checkboxButton}>
-                <svg css={styles.checkboxSvg}>
-                  <circle
-                    cx={6.46154}
-                    cy={6.46154}
-                    r={6.46154}
-                    fill="rgb(219, 221, 223)"
-                    fillOpacity={1}
-                  />
-                  <circle
-                    cx={6.46154}
-                    cy={14.5387}
-                    r={6.46154}
-                    fill="rgb(219, 221, 223)"
-                    fillOpacity={1}
-                  />
-                  <circle
-                    cx={14.5387}
-                    cy={14.5387}
-                    r={6.46154}
-                    fill="rgb(219, 221, 223)"
-                    fillOpacity={1}
-                  />
-                  <circle
-                    cx={14.5387}
-                    cy={6.46154}
-                    r={6.46154}
-                    fill="rgb(219, 221, 223)"
-                    fillOpacity={1}
-                  />
-                </svg>
+                <TodoIconSvg />
               </button>
               <input
                 type="text"
@@ -171,7 +143,12 @@ function Todo() {
                 ]}
               />
               <button css={styles.dotsButton}>
-                <IconDots stroke={2} width={20} height={20} color="#acacac" />
+                <IconDots
+                  stroke={2}
+                  width={20}
+                  height={20}
+                  color="var(--todo-dots-color)"
+                />
               </button>
             </div>
           )}
@@ -196,57 +173,13 @@ function Todo() {
                       onClick={() => toggleTodo(todo.id)}
                       css={styles.checkboxButton}
                     >
-                      <svg
-                        style={{
-                          width: "21px",
-                          height: "21px",
-                        }}
-                      >
-                        <circle
-                          cx={6.46154}
-                          cy={6.46154}
-                          r={6.46154}
-                          fill={
-                            todo.completed
-                              ? `var(${category.color})`
-                              : "rgb(219, 221, 223)"
-                          }
-                          fillOpacity={1}
-                        />
-                        <circle
-                          cx={6.46154}
-                          cy={14.5387}
-                          r={6.46154}
-                          fill={
-                            todo.completed
-                              ? `var(${category.color})`
-                              : "rgb(219, 221, 223)"
-                          }
-                          fillOpacity={1}
-                        />
-                        <circle
-                          cx={14.5387}
-                          cy={14.5387}
-                          r={6.46154}
-                          fill={
-                            todo.completed
-                              ? `var(${category.color})`
-                              : "rgb(219, 221, 223)"
-                          }
-                          fillOpacity={1}
-                        />
-                        <circle
-                          cx={14.5387}
-                          cy={6.46154}
-                          r={6.46154}
-                          fill={
-                            todo.completed
-                              ? `var(${category.color})`
-                              : "rgb(219, 221, 223)"
-                          }
-                          fillOpacity={1}
-                        />
-                      </svg>
+                      <TodoIconSvg
+                        color={
+                          todo.completed
+                            ? `var(${category.color})`
+                            : "var(--category-main-color)"
+                        }
+                      />
                       {todo.completed && (
                         <IconCheck stroke={3} css={styles.checkIcon} />
                       )}
@@ -263,7 +196,7 @@ function Todo() {
                         stroke={2}
                         width={20}
                         height={20}
-                        color="#acacac"
+                        color="var(--todo-dots-color)"
                       />
                     </button>
                   </div>
@@ -293,14 +226,17 @@ function Todo() {
               <p css={styles.sheetTitle}>{selectedTodo?.text}</p>
               <div css={styles.actionButtonsContainer}>
                 <div css={styles.actionButton} onClick={() => setOpen(false)}>
-                  <IconPencilMinus stroke={2} color="#5C85F7" />
+                  <IconPencilMinus
+                    stroke={2}
+                    color="var(--modal-modify-color)"
+                  />
                   <p css={styles.actionButtonText}>수정하기</p>
                 </div>
                 <div
                   css={styles.actionButton}
                   onClick={() => selectedTodo && deleteTodo(selectedTodo.id)}
                 >
-                  <IconTrashX stroke={2} color="#ED6863" />
+                  <IconTrashX stroke={2} color="var(--modal-delete-color)" />
                   <p css={styles.actionButtonText}>삭제하기</p>
                 </div>
               </div>
@@ -334,7 +270,7 @@ const styles = {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #f2f2f2;
+    background-color: var(--category-bg-color);
     padding: 8px 10px;
     gap: 5px;
     margin-right: 339px;
@@ -362,7 +298,7 @@ const styles = {
   `,
 
   checkboxButton: css`
-    background-color: white;
+    background-color: var(--main-white-color);
     padding: 0;
     height: 21px;
     margin-right: 10px;
@@ -391,7 +327,7 @@ const styles = {
   `,
 
   dotsButton: css`
-    background-color: white;
+    background-color: var(--main-white-color);
     padding: 0;
     height: 20px;
     border: none;
@@ -417,11 +353,11 @@ const styles = {
     margin: 0;
     flex: 1;
     text-align: start;
-    color: #000;
+    color: var(--main-black-color);
   `,
 
   todoActionButton: css`
-    background-color: white;
+    background-color: var(--main-white-color);
     padding: 0;
     height: 20px;
     margin-left: 10px;
@@ -436,7 +372,7 @@ const styles = {
     position: relative;
     left: -17px;
     top: -4px;
-    color: white;
+    color: var(--main-white-color);
     z-index: 99;
     margin-right: -13px;
   `,
@@ -458,7 +394,7 @@ const styles = {
   `,
 
   actionButton: css`
-    background-color: #f5f5f5;
+    background-color: var(--modal-bg-color);
     width: 222px;
     height: 68px;
     border-radius: 6px;
@@ -471,7 +407,7 @@ const styles = {
   `,
 
   actionButtonText: css`
-    color: #000;
+    color: var(--main-black-color);
     font-size: 14px;
     margin: 0;
     margin-top: 5px;

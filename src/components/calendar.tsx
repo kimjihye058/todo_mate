@@ -8,6 +8,7 @@ import weekOfYear from "dayjs/plugin/weekOfYear";
 import { atom, useAtom, useAtomValue } from "jotai";
 import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import { achievedThisMonthAtom, unachievedByDateAtom } from "./todoAtom";
+import TodoIconSvg from "./todoIconSvg";
 
 dayjs.extend(weekOfYear);
 dayjs.extend(isoWeek);
@@ -79,7 +80,11 @@ export const Calendar: FC = () => {
           <div
             key={i}
             css={css`
-              color: ${i === 0 ? "#EC5E58" : i === 6 ? "#2F7CF6" : "black"};
+              color: ${i === 0
+                ? `var(--calendar-sunday-color)`
+                : i === 6
+                ? `var(--calendar-saturday-color)`
+                : `var(--main-black-color)`};
             `}
           >
             {day}
@@ -117,7 +122,11 @@ export const Calendar: FC = () => {
                       styles.dateCell,
                       {
                         color:
-                          i === 0 ? "#EC5E58" : i === 6 ? "#2F7CF6" : "black",
+                          i === 0
+                            ? `var(--calendar-sunday-color)`
+                            : i === 6
+                            ? `var(--calendar-saturday-color)`
+                            : `var(--main-black-color)`,
                       },
                     ]}
                   >
@@ -125,36 +134,7 @@ export const Calendar: FC = () => {
                       <span css={styles.unachievedCount}>
                         {unachievedByDate[fmt(current)] || ""}
                       </span>
-                      <svg css={styles.dateSvg}>
-                        <circle
-                          cx={6.46154}
-                          cy={6.46154}
-                          r={6.46154}
-                          fill="rgb(219, 221, 223)"
-                          fillOpacity={1}
-                        />
-                        <circle
-                          cx={6.46154}
-                          cy={14.5387}
-                          r={6.46154}
-                          fill="rgb(219, 221, 223)"
-                          fillOpacity={1}
-                        />
-                        <circle
-                          cx={14.5387}
-                          cy={14.5387}
-                          r={6.46154}
-                          fill="rgb(219, 221, 223)"
-                          fillOpacity={1}
-                        />
-                        <circle
-                          cx={14.5387}
-                          cy={6.46154}
-                          r={6.46154}
-                          fill="rgb(219, 221, 223)"
-                          fillOpacity={1}
-                        />
-                      </svg>
+                      <TodoIconSvg />
                     </div>
                     <div
                       css={[
@@ -163,19 +143,19 @@ export const Calendar: FC = () => {
                           opacity: isOtherMonth ? 0.35 : 1,
                           ...(isSelected
                             ? {
-                                background: "black",
+                                background: `var(--main-black-color)`,
                                 color:
                                   i === 0
-                                    ? "#EC5E58"
+                                    ? `var(--calendar-sunday-color)`
                                     : i === 6
-                                    ? "#2F7CF6"
-                                    : "white",
+                                    ? `var(--calendar-saturday-color)`
+                                    : `var(--main-white-color)`,
                                 fontWeight: 700,
                               }
                             : isToday
                             ? {
                                 background: "#DADDE1",
-                                color: "black",
+                                color: `var(--main-black-color)`,
                                 fontWeight: 700,
                               }
                             : {}),
@@ -221,7 +201,7 @@ const styles = {
     width: 26px;
     margin-left: 8px;
     cursor: pointer;
-    background-color: white;
+    background-color: var(--main-white-color);
     border: none;
   `,
 
@@ -251,7 +231,7 @@ const styles = {
 
   dateBtn: css`
     cursor: pointer;
-    background-color: white;
+    background-color: var(--main-white-color);
   `,
 
   dateCell: css`
@@ -275,13 +255,7 @@ const styles = {
     font-family: Pretendard;
     text-shadow: rgba(0, 0, 0, 0.2) 0px 0px 5px;
     font-weight: 700;
-    color: white;
-  `,
-
-  dateSvg: css`
-    width: 21px;
-    height: 21px;
-    fill: none;
+    color: var(--main-white-color);
   `,
 
   dateDiv: css`

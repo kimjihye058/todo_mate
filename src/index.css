@@ -29,10 +29,20 @@
 }
 
 :root {
+  --category-main-color: #dbdddf;
   --category-1-color: #e35b62;
   --category-2-color: #5e9d68;
   --category-3-color: #f4ce56;
   --category-4-color: #c9d46a;
+  --category-bg-color: #f2f2f2;
+  --calendar-sunday-color: #ec5e58;
+  --calendar-saturday-color: #2f7cf6;
+  --todo-dots-color: #acacac;
+  --modal-bg-color: #f5f5f5;
+  --modal-modify-color: #5c85f7;
+  --modal-delete-color: #ed6863;
+  --main-white-color: #fff;
+  --main-black-color: #000;
 }
 
 body {
