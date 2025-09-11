@@ -124,11 +124,8 @@ function Todo() {
           </button>
 
           {/* 해당 카테고리의 리스트 */}
-          {todos.filter(
-            (todo) =>
-              todo.categoryId === category.id &&
-              todo.date === formattedSelectDate
-          ).length > 0 && (
+          {todos.filter((todo) => todo.categoryId === category.id).length >
+            0 && (
             <div css={styles.todoList}>
               {todos
                 .filter(
