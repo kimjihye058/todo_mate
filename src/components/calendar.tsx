@@ -6,7 +6,11 @@ import weekday from "dayjs/plugin/weekday";
 import isoWeek from "dayjs/plugin/isoWeek";
 import weekOfYear from "dayjs/plugin/weekOfYear";
 import { atom, useAtom, useAtomValue } from "jotai";
-import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
+import {
+  IconChevronLeft,
+  IconChevronRight,
+  IconCheck,
+} from "@tabler/icons-react";
 import { unachievedByDateAtom, todosAtom } from "./todoAtom";
 import TodoIconSvg from "./todoIconSvg";
 
@@ -60,6 +64,13 @@ export const Calendar: FC = () => {
         todo.date.startsWith(selectDate.format("YYYY-MM")) && todo.completed
     ).length;
   });
+
+  const isAllCompletedForDate = (dateStr: string) => {
+    const todosForDate = todos.filter((todo) => todo.date === dateStr);
+    return (
+      todosForDate.length > 0 && todosForDate.every((todo) => todo.completed)
+    );
+  };
 
   const achievedThisMonth = useAtomValue(achievedThisMonthAtom);
   const unachievedByDate = useAtomValue(unachievedByDateAtom);
@@ -164,10 +175,21 @@ export const Calendar: FC = () => {
                     ]}
                   >
                     <div css={styles.dateIconContainer}>
-                      <span css={styles.unachievedCount}>
-                        {unachievedByDate[fmt(current)] || ""}
-                      </span>
-                      <TodoIconSvg colors={dateColors} />
+                      <div css={styles.dateIconContainer}>
+                        <TodoIconSvg colors={dateColors} />
+
+                        {/* 아직 남은 목표 개수 표시 */}
+                        {!isAllCompletedForDate(fmt(current)) && (
+                          <span css={styles.unachievedCount}>
+                            {unachievedByDate[fmt(current)] || ""}
+                          </span>
+                        )}
+
+                        {/* 체크 표시 */}
+                        {isAllCompletedForDate(fmt(current)) && (
+                          <IconCheck stroke={3} css={styles.checkIcon} />
+                        )}
+                      </div>
                     </div>
                     <div
                       css={[
@@ -289,6 +311,14 @@ const styles = {
     text-shadow: rgba(0, 0, 0, 0.2) 0px 0px 5px;
     font-weight: 700;
     color: var(--main-white-color);
+  `,
+
+  checkIcon: css`
+    position: absolute;
+    color: var(--main-white-color);
+    padding-top: 3px;
+    width: 13px;
+    height: 13px;
   `,
 
   dateDiv: css`
