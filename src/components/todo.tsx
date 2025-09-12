@@ -1,5 +1,5 @@
 import { atom, useAtom } from "jotai";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { css } from "@emotion/react";
 import {
   IconWorld,
@@ -42,25 +42,13 @@ function Todo() {
     { id: 4, category: "기타", color: "--category-4-color" },
   ];
 
-  // 카테고리 버튼 클릭 시 입력창 열기/닫기 토글
-  const handleCategoryClick = (categoryId: number) => {
-    setShowInputs((prev) => (prev === categoryId ? null : categoryId));
-  };
-
   // 카테고리 바깥 영역 클릭 시 입력창 닫기
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (
-        wrapperRef.current &&
-        !wrapperRef.current.contains(e.target as Node)
-      ) {
-        setShowInputs(null);
-      }
-    };
-
-    document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("click", handleClickOutside);
-  }, [setShowInputs]);
+  const handleClickOutside = (e: MouseEvent) => {
+    if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
+      setShowInputs(null);
+    }
+  };
+  document.addEventListener("click", handleClickOutside);
 
   // 새로운 todo의 id 값 생성 함수(auto increase)
   const getNextId = () => {
@@ -68,14 +56,9 @@ function Todo() {
   };
 
   // 입력창에서 Enter 누르면 todo 추가
-  const inputTodo = (
-    e: React.KeyboardEvent<HTMLInputElement>,
-    categoryId: number
-  ) => {
-    if (e.nativeEvent.isComposing) return; // 한글 입력 중 이벤트 무시
+  const inputTodo = (categoryId: number) => {
     const inputValue = inputValues[categoryId] || "";
-
-    if (e.key === "Enter" && inputValue.trim() !== "") {
+    if (inputValue.trim() !== "") {
       // 새 todo 추가
       setTodos([
         ...todos,
@@ -87,11 +70,10 @@ function Todo() {
           date: formattedSelectDate,
         },
       ]);
-
-      // 입력창 초기화
-      setInputValues((prev) => ({ ...prev, [categoryId]: "" }));
-      setShowInputs(null);
     }
+
+    // 입력창 초기화
+    setInputValues((prev) => ({ ...prev, [categoryId]: "" }));
   };
 
   // 입력값을 상태에 저장
@@ -101,9 +83,8 @@ function Todo() {
 
   // 선택된 todo 삭제
   const deleteTodo = (id: number) => {
-    setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
-    setSelectedTodo(null);
     setOpen(false);
+    setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
   };
 
   // todo 완료 상태 토글
@@ -121,7 +102,7 @@ function Todo() {
           {/* 카테고리(버튼) */}
           <button
             css={styles.categoryButton}
-            onClick={() => handleCategoryClick(category.id)}
+            onClick={() => setShowInputs(category.id)}
           >
             <IconWorld width={15} height={15} color="#979aa4" />
             <p css={[styles.categoryText, { color: `var(${category.color})` }]}>
@@ -193,7 +174,12 @@ function Todo() {
                     onChange={(e) =>
                       handleTodoChange(category.id, e.target.value)
                     }
-                    onKeyDown={(e) => inputTodo(e, category.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        inputTodo(category.id);
+                      }
+                      if (e.nativeEvent.isComposing) return; // 한글 입력 중 이벤트 무시
+                    }}
                     css={[
                       styles.todoInput,
                       {
@@ -201,6 +187,7 @@ function Todo() {
                       },
                     ]}
                   />
+
                   <button css={styles.dotsButton}>
                     <IconDots
                       stroke={2}
@@ -381,7 +368,6 @@ const styles = {
   checkIcon: css`
     height: 13px;
     width: 13px;
-    position: absolute;
     position: relative;
     left: -17px;
     top: -4px;
