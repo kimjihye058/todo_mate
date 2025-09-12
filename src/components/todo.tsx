@@ -101,9 +101,6 @@ function Todo() {
     setSelectedTodo(null);
     setOpen(false);
   };
-
-  const snapPoint = [0, 0.5, 1];
-
   return (
     <div ref={wrapperRef} css={styles.container}>
       {categoryData.map((category) => (
@@ -217,7 +214,7 @@ function Todo() {
             transform: "translate(-50%, -50%)",
             width: "50%",
             height: "100%",
-            paddingBottom: "120px"
+            paddingBottom: "120px",
           }}
         >
           <Sheet.Header />
