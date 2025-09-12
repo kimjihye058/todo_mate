@@ -42,14 +42,12 @@ function Todo() {
     { id: 4, category: "기타", color: "--category-4-color" },
   ];
 
-  const getNextId = () => {
-    return todos.length > 0 ? Math.max(...todos.map((todo) => todo.id)) + 1 : 1;
-  };
-
+  // 카테고리 버튼 클릭 시 입력창 열기/닫기 토글
   const handleCategoryClick = (categoryId: number) => {
     setShowInputs((prev) => (prev === categoryId ? null : categoryId));
   };
 
+  // 카테고리 바깥 영역 클릭 시 입력창 닫기
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (
@@ -64,13 +62,21 @@ function Todo() {
     return () => document.removeEventListener("click", handleClickOutside);
   }, [setShowInputs]);
 
-  const handleKeyDown = (
+  // 새로운 todo의 id 값 생성 함수(auto increase)
+  const getNextId = () => {
+    return todos.length > 0 ? Math.max(...todos.map((todo) => todo.id)) + 1 : 1;
+  };
+
+  // 입력창에서 Enter 누르면 todo 추가
+  const inputTodo = (
     e: React.KeyboardEvent<HTMLInputElement>,
     categoryId: number
   ) => {
-    if (e.nativeEvent.isComposing) return;
+    if (e.nativeEvent.isComposing) return; // 한글 입력 중 이벤트 무시
     const inputValue = inputValues[categoryId] || "";
+
     if (e.key === "Enter" && inputValue.trim() !== "") {
+      // 새 todo 추가
       setTodos([
         ...todos,
         {
@@ -81,26 +87,33 @@ function Todo() {
           date: formattedSelectDate,
         },
       ]);
+
+      // 입력창 초기화
       setInputValues((prev) => ({ ...prev, [categoryId]: "" }));
+      setShowInputs(null);
     }
   };
 
-  const handleInputChange = (categoryId: number, value: string) => {
+  // 입력값을 상태에 저장
+  const handleTodoChange = (categoryId: number, value: string) => {
     setInputValues((prev) => ({ ...prev, [categoryId]: value }));
   };
 
-  const toggleTodo = (id: number) => {
+  // 선택된 todo 삭제
+  const deleteTodo = (id: number) => {
+    setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
+    setSelectedTodo(null);
+    setOpen(false);
+  };
+
+  // todo 완료 상태 토글
+  const completeTodo = (id: number) => {
     const updated = todos.map((todo) =>
       todo.id === id ? { ...todo, completed: !todo.completed } : todo
     );
     setTodos(updated);
   };
 
-  const deleteTodo = (id: number) => {
-    setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
-    setSelectedTodo(null);
-    setOpen(false);
-  };
   return (
     <div ref={wrapperRef} css={styles.container}>
       {categoryData.map((category) => (
@@ -134,7 +147,7 @@ function Todo() {
                 .map((todo) => (
                   <div key={todo.id} css={styles.todoItem}>
                     <button
-                      onClick={() => toggleTodo(todo.id)}
+                      onClick={() => completeTodo(todo.id)}
                       css={styles.checkboxButton}
                     >
                       <TodoIconSvg
@@ -172,14 +185,15 @@ function Todo() {
                   <button css={styles.checkboxButton}>
                     <TodoIconSvg colors={[]} />
                   </button>
+
                   <input
                     type="text"
                     placeholder="할 일 입력"
                     value={inputValues[category.id] || ""}
                     onChange={(e) =>
-                      handleInputChange(category.id, e.target.value)
+                      handleTodoChange(category.id, e.target.value)
                     }
-                    onKeyDown={(e) => handleKeyDown(e, category.id)}
+                    onKeyDown={(e) => inputTodo(e, category.id)}
                     css={[
                       styles.todoInput,
                       {
@@ -222,7 +236,10 @@ function Todo() {
             <div css={styles.sheetContent}>
               <p css={styles.sheetTitle}>{selectedTodo?.text}</p>
               <div css={styles.actionButtonsContainer}>
-                <div css={styles.actionButton} onClick={() => setOpen(false)}>
+                <div
+                  css={styles.actionButton}
+                  onClick={() => selectedTodo && deleteTodo(selectedTodo.id)}
+                >
                   <IconPencilMinus
                     stroke={2}
                     color="var(--modal-modify-color)"
