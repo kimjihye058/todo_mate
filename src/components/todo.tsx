@@ -1,18 +1,12 @@
 import { atom, useAtom } from "jotai";
 import { useRef } from "react";
 import styled from "@emotion/styled";
-import {
-  IconWorld,
-  IconDots,
-  IconPencilMinus,
-  IconTrashX,
-  IconCheck,
-} from "@tabler/icons-react";
-import { Sheet } from "react-modal-sheet";
+import { IconWorld, IconDots, IconCheck } from "@tabler/icons-react";
 import dayjs from "dayjs";
-import { todosAtom, selectedTodoAtom } from "./todoAtom";
+import { todosAtom, selectedTodoAtom, isOpenAtom } from "./todoAtom";
 import { selectDateAtom } from "./Calendar";
 import TodoIconSvg from "./todoIconSvg";
+import TodoModal from "./TodoModal";
 
 type Category = {
   id: number;
@@ -21,14 +15,13 @@ type Category = {
 };
 
 const showInputAtom = atom<number | null>(null);
-const isOpenAtom = atom(false);
 const inputValuesAtom = atom<Record<number, string>>({});
 
 function Todo() {
   const [todos, setTodos] = useAtom(todosAtom);
   const [inputValues, setInputValues] = useAtom(inputValuesAtom);
-  const [isOpen, setOpen] = useAtom(isOpenAtom);
-  const [selectedTodo, setSelectedTodo] = useAtom(selectedTodoAtom);
+  const [, setOpen] = useAtom(isOpenAtom);
+  const [, setSelectedTodo] = useAtom(selectedTodoAtom);
   const [selectDate] = useAtom(selectDateAtom);
   const [showInputs, setShowInputs] = useAtom(showInputAtom);
 
@@ -81,12 +74,6 @@ function Todo() {
     setInputValues((prev) => ({ ...prev, [categoryId]: value }));
   };
 
-  // 선택된 todo 삭제
-  const deleteTodo = (id: number) => {
-    setOpen(false);
-    setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
-  };
-
   // todo 완료 상태 토글
   const completeTodo = (id: number) => {
     const updated = todos.map((todo) =>
@@ -99,7 +86,6 @@ function Todo() {
     <Container ref={wrapperRef}>
       {categoryData.map((category) => (
         <CategorySection key={category.id}>
-
           <CategoryButton onClick={() => setShowInputs(category.id)}>
             <IconWorld width={15} height={15} color="#979aa4" />
             <CategoryText css={{ color: `var(${category.color})` }}>
@@ -199,48 +185,7 @@ function Todo() {
           )}
         </CategorySection>
       ))}
-
-      <Sheet
-        isOpen={isOpen}
-        onClose={() => setOpen(false)}
-        initialSnap={1}
-        detent="content"
-      >
-        <Sheet.Container
-          style={{
-            left: "25%",
-            transform: "translate(-50%, -50%)",
-            width: "50%",
-            height: "100%",
-            paddingBottom: "120px",
-          }}
-        >
-          <Sheet.Header />
-          <Sheet.Content>
-            <SheetContent>
-              <SheetTitle>{selectedTodo?.text}</SheetTitle>
-              <ActionButtonsContainer>
-                <ActionButton
-                  onClick={() => selectedTodo && deleteTodo(selectedTodo.id)}
-                >
-                  <IconPencilMinus
-                    stroke={2}
-                    color="var(--modal-modify-color)"
-                  />
-                  <ActionButtonText>수정하기</ActionButtonText>
-                </ActionButton>
-                <ActionButton
-                  onClick={() => selectedTodo && deleteTodo(selectedTodo.id)}
-                >
-                  <IconTrashX stroke={2} color="var(--modal-delete-color)" />
-                  <ActionButtonText>삭제하기</ActionButtonText>
-                </ActionButton>
-              </ActionButtonsContainer>
-            </SheetContent>
-          </Sheet.Content>
-        </Sheet.Container>
-        <Sheet.Backdrop onClick={() => setOpen(false)} />
-      </Sheet>
+      <TodoModal />
     </Container>
   );
 }
@@ -351,42 +296,6 @@ const DotsButton = styled.button`
   height: 20px;
   border: none;
   cursor: pointer;
-`;
-
-const SheetContent = styled.div`
-  justify-items: center;
-`;
-
-const SheetTitle = styled.p`
-  font-family: Pretendard;
-  font-size: 20px;
-  font-weight: 700;
-`;
-
-const ActionButtonsContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  gap: 20px;
-`;
-
-const ActionButton = styled.div`
-  background-color: var(--modal-bg-color);
-  width: 222px;
-  height: 68px;
-  border-radius: 6px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  cursor: pointer;
-  border: none;
-`;
-
-const ActionButtonText = styled.p`
-  color: var(--main-black-color);
-  font-size: 14px;
-  margin: 0;
-  margin-top: 5px;
 `;
 
 export default Todo;

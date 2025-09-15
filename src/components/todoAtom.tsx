@@ -15,6 +15,9 @@ export const todosAtom = atomWithStorage<TodoItem[]>("todos", []);
 // 선택된 todo
 export const selectedTodoAtom = atom<TodoItem | null>(null);
 
+// 모달 열림 상태
+export const isOpenAtom = atom(false);
+
 // 날짜별 못 이룬 목표 개수
 export const unachievedByDateAtom = atom((get) => {
   const todos = get(todosAtom);
