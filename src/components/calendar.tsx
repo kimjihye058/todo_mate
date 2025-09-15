@@ -19,7 +19,18 @@ dayjs.extend(isoWeek);
 dayjs.extend(weekday);
 
 export const selectDateAtom = atom(dayjs());
+
 const viewDateAtom = atom(dayjs());
+
+const achievedThisMonthAtom = atom((get) => {
+  const todos = get(todosAtom);
+  const selectDate = get(selectDateAtom);
+
+  return todos.filter(
+    (todo) =>
+      todo.date.startsWith(selectDate.format("YYYY-MM")) && todo.completed
+  ).length;
+});
 
 export const Calendar: FC = () => {
   const [selectDate, setSelectDate] = useAtom(selectDateAtom);
@@ -31,7 +42,7 @@ export const Calendar: FC = () => {
     viewDate.endOf("month").week() === 1 ? 53 : viewDate.endOf("month").week();
 
   const weekDays = useMemo(
-    () => ["일", "월", "화", "수", "목", "금", "토"],
+    () => Object.freeze(["일", "월", "화", "수", "목", "금", "토"]),
     []
   );
 
@@ -54,16 +65,6 @@ export const Calendar: FC = () => {
 
   const fmt = (d: dayjs.Dayjs) => d.format("YYYY-MM-DD");
   const fmtMonth = (d: dayjs.Dayjs) => d.format("MM");
-
-  const achievedThisMonthAtom = atom((get) => {
-    const todos = get(todosAtom);
-    const selectDate = get(selectDateAtom);
-
-    return todos.filter(
-      (todo) =>
-        todo.date.startsWith(selectDate.format("YYYY-MM")) && todo.completed
-    ).length;
-  });
 
   const isAllCompletedForDate = (dateStr: string) => {
     const todosForDate = todos.filter((todo) => todo.date === dateStr);

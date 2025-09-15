@@ -13,6 +13,7 @@ import dayjs from "dayjs";
 import { todosAtom, selectedTodoAtom } from "./todoAtom";
 import { selectDateAtom } from "./Calendar";
 import TodoIconSvg from "./todoIconSvg";
+import { object } from "motion/react-client";
 
 type Category = {
   id: number;
