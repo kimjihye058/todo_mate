@@ -1,6 +1,6 @@
 import { atom, useAtom } from "jotai";
 import { useRef } from "react";
-import { css } from "@emotion/react";
+import styled from "@emotion/styled";
 import {
   IconWorld,
   IconDots,
@@ -13,7 +13,6 @@ import dayjs from "dayjs";
 import { todosAtom, selectedTodoAtom } from "./todoAtom";
 import { selectDateAtom } from "./Calendar";
 import TodoIconSvg from "./todoIconSvg";
-import { object } from "motion/react-client";
 
 type Category = {
   id: number;
@@ -97,28 +96,21 @@ function Todo() {
   };
 
   return (
-    <div ref={wrapperRef} css={styles.container}>
+    <Container ref={wrapperRef}>
       {categoryData.map((category) => (
-        <div key={category.id} css={styles.categorySection}>
-          {/* 카테고리(버튼) */}
-          <button
-            css={styles.categoryButton}
-            onClick={() => setShowInputs(category.id)}
-          >
-            <IconWorld width={15} height={15} color="#979aa4" />
-            <p css={[styles.categoryText, { color: `var(${category.color})` }]}>
-              {category.category}
-            </p>
-            <img
-              src="./images/feed/feedAddBtnIcon.png"
-              css={styles.categoryIcon}
-            />
-          </button>
+        <CategorySection key={category.id}>
 
-          {/* 해당 카테고리의 리스트 */}
+          <CategoryButton onClick={() => setShowInputs(category.id)}>
+            <IconWorld width={15} height={15} color="#979aa4" />
+            <CategoryText css={{ color: `var(${category.color})` }}>
+              {category.category}
+            </CategoryText>
+            <CategoryIcon src="./images/feed/feedAddBtnIcon.png" />
+          </CategoryButton>
+
           {todos.filter((todo) => todo.categoryId === category.id).length >
             0 && (
-            <div css={styles.todoList}>
+            <TodoList>
               {todos
                 .filter(
                   (todo) =>
@@ -127,11 +119,8 @@ function Todo() {
                 )
                 .sort((a, b) => Number(a.completed) - Number(b.completed))
                 .map((todo) => (
-                  <div key={todo.id} css={styles.todoItem}>
-                    <button
-                      onClick={() => completeTodo(todo.id)}
-                      css={styles.checkboxButton}
-                    >
+                  <TodoItem key={todo.id}>
+                    <CheckboxButton onClick={() => completeTodo(todo.id)}>
                       <TodoIconSvg
                         colors={[
                           todo.completed
@@ -140,16 +129,27 @@ function Todo() {
                         ]}
                       />
                       {todo.completed && (
-                        <IconCheck stroke={3} css={styles.checkIcon} />
+                        <IconCheck
+                          stroke={3}
+                          css={`
+                            height: 13px;
+                            width: 13px;
+                            position: relative;
+                            left: -17px;
+                            top: -4px;
+                            color: var(--main-white-color);
+                            z-index: 99;
+                            margin-right: -13px;
+                          `}
+                        />
                       )}
-                    </button>
-                    <p css={styles.todoText}>{todo.text}</p>
-                    <button
+                    </CheckboxButton>
+                    <TodoText>{todo.text}</TodoText>
+                    <TodoActionButton
                       onClick={() => {
                         setSelectedTodo(todo);
                         setOpen(true);
                       }}
-                      css={styles.todoActionButton}
                     >
                       <IconDots
                         stroke={2}
@@ -157,18 +157,17 @@ function Todo() {
                         height={20}
                         color="var(--todo-dots-color)"
                       />
-                    </button>
-                  </div>
+                    </TodoActionButton>
+                  </TodoItem>
                 ))}
 
-              {/* 입력창(토글) */}
               {showInputs === category.id && (
-                <div css={styles.inputContainer}>
-                  <button css={styles.checkboxButton}>
+                <InputContainer>
+                  <CheckboxButton>
                     <TodoIconSvg colors={[]} />
-                  </button>
+                  </CheckboxButton>
 
-                  <input
+                  <TodoInput
                     type="text"
                     placeholder="할 일 입력"
                     value={inputValues[category.id] || ""}
@@ -181,27 +180,24 @@ function Todo() {
                       }
                       if (e.nativeEvent.isComposing) return; // 한글 입력 중 이벤트 무시
                     }}
-                    css={[
-                      styles.todoInput,
-                      {
-                        borderBottom: `2px solid var(${category.color})`,
-                      },
-                    ]}
+                    css={{
+                      borderBottom: `2px solid var(${category.color})`,
+                    }}
                   />
 
-                  <button css={styles.dotsButton}>
+                  <DotsButton>
                     <IconDots
                       stroke={2}
                       width={20}
                       height={20}
                       color="var(--todo-dots-color)"
                     />
-                  </button>
-                </div>
+                  </DotsButton>
+                </InputContainer>
               )}
-            </div>
+            </TodoList>
           )}
-        </div>
+        </CategorySection>
       ))}
 
       <Sheet
@@ -221,197 +217,176 @@ function Todo() {
         >
           <Sheet.Header />
           <Sheet.Content>
-            <div css={styles.sheetContent}>
-              <p css={styles.sheetTitle}>{selectedTodo?.text}</p>
-              <div css={styles.actionButtonsContainer}>
-                <div
-                  css={styles.actionButton}
+            <SheetContent>
+              <SheetTitle>{selectedTodo?.text}</SheetTitle>
+              <ActionButtonsContainer>
+                <ActionButton
                   onClick={() => selectedTodo && deleteTodo(selectedTodo.id)}
                 >
                   <IconPencilMinus
                     stroke={2}
                     color="var(--modal-modify-color)"
                   />
-                  <p css={styles.actionButtonText}>수정하기</p>
-                </div>
-                <div
-                  css={styles.actionButton}
+                  <ActionButtonText>수정하기</ActionButtonText>
+                </ActionButton>
+                <ActionButton
                   onClick={() => selectedTodo && deleteTodo(selectedTodo.id)}
                 >
                   <IconTrashX stroke={2} color="var(--modal-delete-color)" />
-                  <p css={styles.actionButtonText}>삭제하기</p>
-                </div>
-              </div>
-            </div>
+                  <ActionButtonText>삭제하기</ActionButtonText>
+                </ActionButton>
+              </ActionButtonsContainer>
+            </SheetContent>
           </Sheet.Content>
         </Sheet.Container>
         <Sheet.Backdrop onClick={() => setOpen(false)} />
       </Sheet>
-    </div>
+    </Container>
   );
 }
 
 // 스타일 정의
-const styles = {
-  container: css`
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 20px;
-  `,
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+`;
 
-  categorySection: css`
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    width: 100%;
-  `,
+const CategorySection = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+`;
 
-  categoryButton: css`
-    border-radius: 50px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: var(--category-bg-color);
-    padding: 8px 10px;
-    gap: 5px;
-    margin-right: 339px;
-    border: none;
-    cursor: pointer;
-  `,
+const CategoryButton = styled.button`
+  border-radius: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--category-bg-color);
+  padding: 8px 10px;
+  gap: 5px;
+  margin-right: 339px;
+  border: none;
+  cursor: pointer;
+`;
 
-  categoryText: css`
+const CategoryText = styled.p`
+  font-family: Pretendard;
+  font-weight: 600;
+  font-size: 14px;
+  margin: 0;
+`;
+
+const CategoryIcon = styled.img`
+  width: 20px;
+  height: 20px;
+`;
+
+const TodoList = styled.div`
+  margin-top: 10px;
+`;
+
+const TodoItem = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 432px;
+  margin: 10px 0;
+`;
+
+const CheckboxButton = styled.button`
+  background-color: var(--main-white-color);
+  padding: 0;
+  height: 21px;
+  margin-right: 10px;
+  border: none;
+  cursor: pointer;
+`;
+
+const TodoText = styled.p`
+  font-family: Pretendard;
+  font-weight: 400;
+  font-size: 14px;
+  margin: 0;
+  flex: 1;
+  text-align: start;
+  color: var(--main-black-color);
+`;
+
+const TodoActionButton = styled.button`
+  background-color: var(--main-white-color);
+  padding: 0;
+  height: 20px;
+  margin-left: 10px;
+  border: none;
+  cursor: pointer;
+`;
+
+const InputContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const TodoInput = styled.input`
+  border: none;
+  width: 377px;
+  height: 21px;
+  outline: none;
+
+  &::placeholder {
     font-family: Pretendard;
-    font-weight: 600;
-    font-size: 14px;
-    margin: 0;
-  `,
+    font-weight: 500;
+    font-size: 15px;
+    color: #4c4c4c;
+  }
+`;
 
-  categoryIcon: css`
-    width: 20px;
-    height: 20px;
-  `,
+const DotsButton = styled.button`
+  background-color: var(--main-white-color);
+  padding: 0;
+  height: 20px;
+  border: none;
+  cursor: pointer;
+`;
 
-  inputContainer: css`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  `,
+const SheetContent = styled.div`
+  justify-items: center;
+`;
 
-  checkboxButton: css`
-    background-color: var(--main-white-color);
-    padding: 0;
-    height: 21px;
-    margin-right: 10px;
-    border: none;
-    cursor: pointer;
-  `,
+const SheetTitle = styled.p`
+  font-family: Pretendard;
+  font-size: 20px;
+  font-weight: 700;
+`;
 
-  checkboxSvg: css`
-    width: 21px;
-    height: 21px;
-    fill: none;
-  `,
+const ActionButtonsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+`;
 
-  todoInput: css`
-    border: none;
-    width: 377px;
-    height: 21px;
-    outline: none;
+const ActionButton = styled.div`
+  background-color: var(--modal-bg-color);
+  width: 222px;
+  height: 68px;
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  cursor: pointer;
+  border: none;
+`;
 
-    &::placeholder {
-      font-family: Pretendard;
-      font-weight: 500;
-      font-size: 15px;
-      color: #4c4c4c;
-    }
-  `,
-
-  dotsButton: css`
-    background-color: var(--main-white-color);
-    padding: 0;
-    height: 20px;
-    border: none;
-    cursor: pointer;
-  `,
-
-  todoList: css`
-    margin-top: 10px;
-  `,
-
-  todoItem: css`
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    width: 432px;
-    margin: 10px 0;
-  `,
-
-  todoText: css`
-    font-family: Pretendard;
-    font-weight: 400;
-    font-size: 14px;
-    margin: 0;
-    flex: 1;
-    text-align: start;
-    color: var(--main-black-color);
-  `,
-
-  todoActionButton: css`
-    background-color: var(--main-white-color);
-    padding: 0;
-    height: 20px;
-    margin-left: 10px;
-    border: none;
-    cursor: pointer;
-  `,
-
-  checkIcon: css`
-    height: 13px;
-    width: 13px;
-    position: relative;
-    left: -17px;
-    top: -4px;
-    color: var(--main-white-color);
-    z-index: 99;
-    margin-right: -13px;
-  `,
-
-  sheetContent: css`
-    justify-items: center;
-  `,
-
-  sheetTitle: css`
-    font-family: Pretendard;
-    font-size: 20px;
-    font-weight: 700;
-  `,
-
-  actionButtonsContainer: css`
-    display: flex;
-    flex-direction: row;
-    gap: 20px;
-  `,
-
-  actionButton: css`
-    background-color: var(--modal-bg-color);
-    width: 222px;
-    height: 68px;
-    border-radius: 6px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    cursor: pointer;
-    border: none;
-  `,
-
-  actionButtonText: css`
-    color: var(--main-black-color);
-    font-size: 14px;
-    margin: 0;
-    margin-top: 5px;
-  `,
-};
+const ActionButtonText = styled.p`
+  color: var(--main-black-color);
+  font-size: 14px;
+  margin: 0;
+  margin-top: 5px;
+`;
 
 export default Todo;
