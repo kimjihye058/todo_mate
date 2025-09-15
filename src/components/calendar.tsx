@@ -1,4 +1,6 @@
-import { css } from "@emotion/react";
+import styled from "@emotion/styled";
+import { css } from '@emotion/react';
+
 import type { FC } from "react";
 import { useMemo } from "react";
 import dayjs from "dayjs";
@@ -90,35 +92,29 @@ export const Calendar: FC = () => {
   };
 
   return (
-    <div css={styles.container}>
-      <div css={styles.header}>
-        <div css={styles.headerLeft}>
+    <Container>
+      <Header>
+        <HeaderLeft>
           <p>{viewDate.format("YYYY년 M월")}</p>
           <img
             src="./images/calendar/calendarVictoryIcon.svg"
             alt="완료한 개수"
           />
           <p>{achievedThisMonth}</p>
-        </div>
+        </HeaderLeft>
 
         <div>
-          <button
-            css={styles.navigationButton}
-            onClick={() => changeMonth("subtract")}
-          >
+          <NavigationButton onClick={() => changeMonth("subtract")}>
             <IconChevronLeft stroke={2} />
-          </button>
-          <button
-            css={styles.navigationButton}
-            onClick={() => changeMonth("add")}
-          >
+          </NavigationButton>
+          <NavigationButton onClick={() => changeMonth("add")}>
             <IconChevronRight stroke={2} />
-          </button>
+          </NavigationButton>
         </div>
-      </div>
+      </Header>
 
       {/* 요일 header */}
-      <div css={styles.weekDaysGrid}>
+      <WeekDaysGrid>
         {weekDays.map((day, i) => (
           <div
             key={i}
@@ -133,15 +129,15 @@ export const Calendar: FC = () => {
             {day}
           </div>
         ))}
-      </div>
+      </WeekDaysGrid>
 
       {/* 날짜 */}
-      <div css={styles.datesContainer}>
+      <DatesContainer>
         {Array.from(
           { length: endWeek - startWeek + 1 },
           (_, idx) => startWeek + idx
         ).map((week) => (
-          <div key={week} css={styles.weekGrid}>
+          <WeekGrid key={week}>
             {Array.from({ length: 7 }, (_, i) => {
               const current = viewDate.week(week).startOf("week").add(i, "day");
 
@@ -151,191 +147,183 @@ export const Calendar: FC = () => {
 
               // 다른 달일 때 비우기
               if (isOtherMonth) {
-                return <div key={`${week}_${i}`} css={styles.emptyDateCell} />;
+                return <EmptyDateCell key={`${week}_${i}`} />;
               }
 
               const dateColors = getColorsForDate(fmt(current));
 
               return (
-                <button
+                <DateBtn
                   key={`${week}_${i}`}
-                  css={styles.dateBtn}
                   onClick={() => setSelectDate(current)}
                 >
-                  <div
-                    css={[
-                      styles.dateCell,
-                      {
-                        color:
-                          i === 0
-                            ? `var(--calendar-sunday-color)`
-                            : i === 6
-                            ? `var(--calendar-saturday-color)`
-                            : `var(--main-black-color)`,
-                      },
-                    ]}
+                  <DateCell
+                    css={{
+                      color:
+                        i === 0
+                          ? `var(--calendar-sunday-color)`
+                          : i === 6
+                          ? `var(--calendar-saturday-color)`
+                          : `var(--main-black-color)`,
+                    }}
                   >
-                    <div css={styles.dateIconContainer}>
-                      <div css={styles.dateIconContainer}>
+                    <DateIconContainer>
+                      <DateIconContainer>
                         <TodoIconSvg colors={dateColors} />
 
                         {/* 아직 남은 목표 개수 표시 */}
                         {!isAllCompletedForDate(fmt(current)) && (
-                          <span css={styles.unachievedCount}>
+                          <UnachievedCount>
                             {unachievedByDate[fmt(current)] || ""}
-                          </span>
+                          </UnachievedCount>
                         )}
 
                         {/* 체크 표시 */}
                         {isAllCompletedForDate(fmt(current)) && (
-                          <IconCheck stroke={3} css={styles.checkIcon} />
+                          <IconCheck
+                            stroke={3}
+                            css={`
+                              position: absolute;
+                              color: var(--main-white-color);
+                              padding-top: 3px;
+                              width: 13px;
+                              height: 13px;
+                            `}
+                          />
                         )}
-                      </div>
-                    </div>
-                    <div
-                      css={[
-                        styles.dateDiv,
-                        {
-                          opacity: isOtherMonth ? 0.35 : 1,
-                          ...(isSelected
-                            ? {
-                                background: `var(--main-black-color)`,
-                                color:
-                                  i === 0
-                                    ? `var(--calendar-sunday-color)`
-                                    : i === 6
-                                    ? `var(--calendar-saturday-color)`
-                                    : `var(--main-white-color)`,
-                                fontWeight: 700,
-                              }
-                            : isToday
-                            ? {
-                                background: "#DADDE1",
-                                color: `var(--main-black-color)`,
-                                fontWeight: 700,
-                              }
-                            : {}),
-                        },
-                      ]}
+                      </DateIconContainer>
+                    </DateIconContainer>
+                    <DateDiv
+                      css={{
+                        opacity: isOtherMonth ? 0.35 : 1,
+                        ...(isSelected
+                          ? {
+                              background: `var(--main-black-color)`,
+                              color:
+                                i === 0
+                                  ? `var(--calendar-sunday-color)`
+                                  : i === 6
+                                  ? `var(--calendar-saturday-color)`
+                                  : `var(--main-white-color)`,
+                              fontWeight: 700,
+                            }
+                          : isToday
+                          ? {
+                              background: "#DADDE1",
+                              color: `var(--main-black-color)`,
+                              fontWeight: 700,
+                            }
+                          : {}),
+                      }}
                     >
                       {current.format("D")}
-                    </div>
-                  </div>
-                </button>
+                    </DateDiv>
+                  </DateCell>
+                </DateBtn>
               );
             })}
-          </div>
+          </WeekGrid>
         ))}
-      </div>
-    </div>
+      </DatesContainer>
+    </Container>
   );
 };
 
 // 스타일 정의
-const styles = {
-  container: css`
-    margin-top: 16px;
-    transform: translate3d(-14px, 0px, 0px);
-    width: calc(100% + 28px);
-  `,
+const Container = styled.div`
+  margin-top: 16px;
+  transform: translate3d(-14px, 0px, 0px);
+  width: calc(100% + 28px);
+`;
 
-  header: css`
-    font-size: 14px;
-    font-weight: 700;
-    display: flex;
-    justify-content: space-between;
-    margin: auto 14px 10px;
-  `,
+const Header = styled.div`
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  justify-content: space-between;
+  margin: auto 14px 10px;
+`;
 
-  headerLeft: css`
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-  `,
+const HeaderLeft = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+`;
 
-  navigationButton: css`
-    width: 26px;
-    margin-left: 8px;
-    cursor: pointer;
-    background-color: var(--main-white-color);
-    border: none;
-  `,
+const NavigationButton = styled.button`
+  width: 26px;
+  margin-left: 8px;
+  cursor: pointer;
+  background-color: var(--main-white-color);
+  border: none;
+`;
 
-  weekDaysGrid: css`
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    text-align: center;
-    font-size: 10px;
-    margin: 4px auto;
-    padding: 0 14px;
-  `,
+const WeekDaysGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-size: 10px;
+  margin: 4px auto;
+  padding: 0 14px;
+`;
 
-  datesContainer: css`
-    padding: 0 14px;
-  `,
+const DatesContainer = styled.div`
+  padding: 0 14px;
+`;
 
-  weekGrid: css`
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    text-align: center;
-    margin-bottom: 6px;
-  `,
+const WeekGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  margin-bottom: 6px;
+`;
 
-  emptyDateCell: css`
-    height: 30px;
-  `,
+const EmptyDateCell = styled.div`
+  height: 30px;
+`;
 
-  dateBtn: css`
-    cursor: pointer;
-    background-color: var(--main-white-color);
-  `,
+const DateBtn = styled.button`
+  cursor: pointer;
+  background-color: var(--main-white-color);
+`;
 
-  dateCell: css`
-    padding: 6px 0;
-  `,
+const DateCell = styled.div`
+  padding: 6px 0;
+`;
 
-  dateIconContainer: css`
-    height: 21px;
-    position: relative;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 4px;
-  `,
+const DateIconContainer = styled.div`
+  height: 21px;
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 4px;
+`;
 
-  unachievedCount: css`
-    position: absolute;
-    padding-top: 3px;
-    font-size: 13px;
-    font-family: Pretendard;
-    text-shadow: rgba(0, 0, 0, 0.2) 0px 0px 5px;
-    font-weight: 700;
-    color: var(--main-white-color);
-  `,
+const UnachievedCount = styled.span`
+  position: absolute;
+  padding-top: 3px;
+  font-size: 13px;
+  font-family: Pretendard;
+  text-shadow: rgba(0, 0, 0, 0.2) 0px 0px 5px;
+  font-weight: 700;
+  color: var(--main-white-color);
+`;
 
-  checkIcon: css`
-    position: absolute;
-    color: var(--main-white-color);
-    padding-top: 3px;
-    width: 13px;
-    height: 13px;
-  `,
-
-  dateDiv: css`
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    width: 20px;
-    height: 20px;
-    margin: 0 auto;
-    border-radius: 50%;
-    font-family: Pretendard;
-    font-size: 12px;
-    font-weight: 400;
-    border: none;
-    background: none;
-  `,
-};
+const DateDiv = styled.div`
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+  margin: 0 auto;
+  border-radius: 50%;
+  font-family: Pretendard;
+  font-size: 12px;
+  font-weight: 400;
+  border: none;
+  background: none;
+`;
 
 export default Calendar;
