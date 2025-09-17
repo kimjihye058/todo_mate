@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import Calendar from "./components/Calendar";
-import Todo from "./components/todo";
+import Todo from "./components/Todo";
 
 function Home() {
   return (

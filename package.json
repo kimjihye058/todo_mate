@@ -12,6 +12,7 @@
   "dependencies": {
     "@emotion/css": "^11.13.5",
     "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
     "@tabler/icons-react": "^3.34.1",
     "atoms": "^0.2.0",
     "dayjs": "^1.11.18",
