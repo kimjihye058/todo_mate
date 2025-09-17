@@ -28,6 +28,13 @@
   src: url("./fonts/800_Pretendard_ExtraBold.otf") format("otf");
 }
 
+:root {
+  --category-1-color: #e35b62;
+  --category-2-color: #5e9d68;
+  --category-3-color: #f4ce56;
+  --category-4-color: #c9d46a;
+}
+
 body {
   margin: 0;
   place-items: center;
@@ -36,4 +43,9 @@ body {
 button {
   border: none;
   cursor: pointer;
+}
+*,
+*:focus,
+*:hover {
+  outline: none;
 }
