@@ -1,60 +1,50 @@
-import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import { css } from "@emotion/react";
 import type { FC } from "react";
 import { useMemo } from "react";
 import dayjs from "dayjs";
-import { atom, useAtom } from "jotai";
+import weekday from "dayjs/plugin/weekday";
+import isoWeek from "dayjs/plugin/isoWeek";
+import weekOfYear from "dayjs/plugin/weekOfYear";
+import { atom, useAtom, useAtomValue } from "jotai";
+import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
+import { achievedThisMonthAtom, unachievedByDateAtom } from "./todoAtom";
 
-interface ICalendarProps {
-  selectDate: dayjs.Dayjs;
-  setSelectDate: (date: dayjs.Dayjs) => void;
-}
+dayjs.extend(weekOfYear);
+dayjs.extend(isoWeek);
+dayjs.extend(weekday);
 
+export const selectDateAtom = atom(dayjs());
 const viewDateAtom = atom(dayjs());
 
-export const Calendar: FC<ICalendarProps> = ({ selectDate, setSelectDate }) => {
+export const Calendar: FC = () => {
+  const [selectDate, setSelectDate] = useAtom(selectDateAtom);
+
   const [viewDate, setViewDate] = useAtom(viewDateAtom);
+
+  const startWeek = viewDate.startOf("month").week();
+  const endWeek =
+    viewDate.endOf("month").week() === 1 ? 53 : viewDate.endOf("month").week();
 
   const weekDays = useMemo(
     () => ["일", "월", "화", "수", "목", "금", "토"],
     []
   );
 
-  // 달력 날짜 생성하는 함수
-  const generateCalendarDates = useMemo(() => {
-    const startOfMonth = viewDate.startOf("month");
-    const endOfMonth = viewDate.endOf("month");
-    const startDate = startOfMonth.startOf("week");
-    const endDate = endOfMonth.endOf("week");
-
-    const dates = [];
-    let currentDate = startDate;
-
-    while (
-      currentDate.isBefore(endDate) ||
-      currentDate.isSame(endDate, "day")
-    ) {
-      dates.push(currentDate);
-      currentDate = currentDate.add(1, "day");
-    }
-
-    return dates;
-  }, [viewDate]);
-
-  const changeMonth = (changeString: string) => {
-    switch (changeString) {
-      case "add":
-        return setViewDate(viewDate.add(1, "month"));
-      case "subtract":
-        return setViewDate(viewDate.subtract(1, "month"));
-      case "today":
-        return setViewDate(dayjs());
-      default:
-        return viewDate;
+  const changeMonth = (type: "add" | "subtract" | "today") => {
+    if (type === "add") {
+      setViewDate((prev) => prev.add(1, "month"));
+    } else if (type === "subtract") {
+      setViewDate((prev) => prev.subtract(1, "month"));
+    } else {
+      setViewDate(dayjs());
     }
   };
 
-  const today = dayjs();
+  const fmt = (d: dayjs.Dayjs) => d.format("YYYY-MM-DD");
+  const fmtMonth = (d: dayjs.Dayjs) => d.format("MM");
+
+  const achievedThisMonth = useAtomValue(achievedThisMonthAtom);
+  const unachievedByDate = useAtomValue(unachievedByDateAtom);
 
   return (
     <div
@@ -85,7 +75,7 @@ export const Calendar: FC<ICalendarProps> = ({ selectDate, setSelectDate }) => {
             src="./images/calendar/calendarVictoryIcon.svg"
             alt="완료한 개수"
           />
-          <p></p>
+          <p>{achievedThisMonth}</p>
         </div>
 
         <div>
@@ -116,6 +106,7 @@ export const Calendar: FC<ICalendarProps> = ({ selectDate, setSelectDate }) => {
         </div>
       </div>
 
+      {/* 요일 header */}
       <div
         css={css`
           display: grid;
@@ -126,64 +117,160 @@ export const Calendar: FC<ICalendarProps> = ({ selectDate, setSelectDate }) => {
           padding: 0 14px;
         `}
       >
-        {weekDays.map((day) => (
-          <div key={day}>{day}</div>
+        {weekDays.map((day, i) => (
+          <div
+            key={i}
+            css={css`
+              color: ${i === 0 ? "#EC5E58" : i === 6 ? "#2F7CF6" : "black"};
+            `}
+          >
+            {day}
+          </div>
         ))}
       </div>
 
+      {/* 날짜 */}
       <div
         css={css`
-          display: grid;
-          grid-template-columns: repeat(7, 1fr);
           padding: 0 14px;
         `}
       >
-        {generateCalendarDates.map((date) => {
-          const isToday = date.isSame(today, "day");
-          const isCurrentMonth = date.isSame(viewDate, "month");
-          const isSelected = date.isSame(selectDate, "day");
+        {Array.from(
+          { length: endWeek - startWeek + 1 },
+          (_, idx) => startWeek + idx
+        ).map((week) => (
+          <div
+            key={week}
+            css={css`
+              display: grid;
+              grid-template-columns: repeat(7, 1fr);
+              text-align: center;
+              margin-bottom: 6px;
+            `}
+          >
+            {Array.from({ length: 7 }, (_, i) => {
+              const current = viewDate.week(week).startOf("week").add(i, "day");
 
-          return (
-            <div
-              key={date.format("YYYY-MM-DD")}
-              css={css`
-                width: 21px;
-                height: 35px;
-                margin: 8px auto;
-                display: flex;
-                flex-direction: column;
-                text-align: center;
-                cursor: pointer;
-              `}
-              onClick={() => setSelectDate(date)}
-            >
-              <p
-                css={css`
-                  color: ${
-                    isSelected
-                      ? "white"
-                      : isToday
-                      ? "black"
-                      : !isCurrentMonth
-                      ? "#DADDE1"
-                      : "black"
-                  };
-                  background-color: ${
-                    isSelected
-                      ? "black"
-                      : isToday
-                      ? "#DADDE1"
-                      : "transparent"
-                  };
-                  border-radius: ${isSelected || isToday ? "50%" : "0"};
-                  width: 20px;
-                `}
-              >
-                {date.date()}
-              </p>
-            </div>
-          );
-        })}
+              const isSelected = fmt(selectDate) === fmt(current);
+              const isToday = fmt(dayjs()) === fmt(current);
+              const isOtherMonth = fmtMonth(current) !== fmtMonth(viewDate);
+
+              // 다른 달일 때 비우기
+              if (isOtherMonth) {
+                return (
+                  <div
+                    key={`${week}_${i}`}
+                    css={css`
+                      height: 30px;
+                    `}
+                  />
+                );
+              }
+
+              return (
+                <div key={`${week}_${i}`}>
+                  <div
+                    css={css`
+                      color: ${i === 0
+                        ? "#EC5E58"
+                        : i === 6
+                        ? "#2F7CF6"
+                        : "black"};
+                      padding: 6px 0;
+                    `}
+                  >
+                    <div
+                      css={css`
+                        height: 21px;
+                        position: relative;
+                        cursor: pointer;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        margin-bottom: 4px;
+                      `}
+                    >
+                      <span
+                        css={css`
+                          position: absolute;
+                          padding-top: 3px;
+                          font-size: 13px;
+                          font-family: Pretendard;
+                          text-shadow: rgba(0, 0, 0, 0.2) 0px 0px 5px;
+                          font-weight: 700;
+                          color: white;
+                        `}
+                      >
+                        {unachievedByDate[fmt(current)] || ""}
+                      </span>
+                      <svg
+                        css={css`
+                          width: 21px;
+                          height: 21px;
+                          fill: none;
+                        `}
+                      >
+                        <circle
+                          cx={6.46154}
+                          cy={6.46154}
+                          r={6.46154}
+                          fill="rgb(219, 221, 223)"
+                          fillOpacity={1}
+                        ></circle>
+                        <circle
+                          cx={6.46154}
+                          cy={14.5387}
+                          r={6.46154}
+                          fill="rgb(219, 221, 223)"
+                          fillOpacity={1}
+                        ></circle>
+                        <circle
+                          cx={14.5387}
+                          cy={14.5387}
+                          r={6.46154}
+                          fill="rgb(219, 221, 223)"
+                          fillOpacity={1}
+                        ></circle>
+                        <circle
+                          cx={14.5387}
+                          cy={6.46154}
+                          r={6.46154}
+                          fill="rgb(219, 221, 223)"
+                          fillOpacity={1}
+                        ></circle>
+                      </svg>
+                    </div>
+                    <div
+                      onClick={() => setSelectDate(current)}
+                      css={css`
+                        display: inline-flex;
+                        justify-content: center;
+                        align-items: center;
+                        width: 20px;
+                        height: 20px;
+                        margin: 0 auto;
+                        border-radius: 50%;
+                        font-family: Pretendard;
+                        font-size: 12px;
+                        font-weight: 400;
+                        cursor: pointer;
+                        ${isOtherMonth ? "opacity: 0.35;" : ""}
+                        ${isSelected
+                          ? "background: black; color: white; font-weight: 700;"
+                          : ""}
+                          ${!isSelected && isToday
+                          ? "background: #DADDE1; color: black; font-weight: 700;"
+                          : ""}
+                      `}
+                    >
+                      {current.format("D")}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ))}
       </div>
     </div>
   );
